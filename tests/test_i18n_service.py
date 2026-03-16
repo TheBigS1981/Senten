@@ -1,18 +1,14 @@
 """Tests for the i18n service."""
 
-import pytest
-from unittest.mock import patch, MagicMock
-from pathlib import Path
-
 from app.services.i18n_service import (
-    get_translations,
-    get_supported_languages,
+    DEFAULT_LANGUAGE,
+    SUPPORTED_LANGUAGES,
+    _flatten_dict,
     get_default_language,
     get_language_name,
+    get_supported_languages,
+    get_translations,
     is_supported,
-    _flatten_dict,
-    SUPPORTED_LANGUAGES,
-    DEFAULT_LANGUAGE,
 )
 
 
