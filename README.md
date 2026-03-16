@@ -6,8 +6,7 @@
 
 <img src="static/img/logo-large.svg" alt="Senten Logo" width="160">
 
-Self-hosted web interface for the DeepL API. Translate texts (30+ languages) or
-optimize writing style without using DeepL's paid web interface.
+A self-hosted web interface for the DeepL API or your favourite local or cloud LLM. Translate texts in over 30 languages or optimise your writing style without using the DeepL web interface. 
 
 ![Senten UI](docs/screenshot.png)
 
