@@ -6,11 +6,9 @@
 #
 annotated-doc==0.0.4
     # via fastapi
-bcrypt==4.2.1
-    # via -r requirements.in
 annotated-types==0.7.0
     # via pydantic
-anthropic==0.84.0
+anthropic==0.85.0
     # via -r requirements.in
 anyio==4.12.1
     # via
@@ -30,8 +28,6 @@ charset-normalizer==3.4.4
     # via requests
 click==8.3.1
     # via uvicorn
-coverage[toml]==7.13.4
-    # via pytest-cov
 cryptography==46.0.5
     # via pyjwt
 deepl==1.28.0
@@ -44,7 +40,7 @@ distro==1.9.0
     #   openai
 docstring-parser==0.17.0
     # via anthropic
-fastapi==0.133.0
+fastapi==0.135.1
     # via -r requirements.in
 greenlet==3.3.2
     # via sqlalchemy
@@ -66,8 +62,6 @@ idna==3.11
     #   anyio
     #   httpx
     #   requests
-iniconfig==2.3.0
-    # via pytest
 jinja2==3.1.6
     # via -r requirements.in
 jiter==0.13.0
@@ -78,16 +72,10 @@ limits==5.8.0
     # via slowapi
 markupsafe==3.0.3
     # via jinja2
-openai==2.24.0
+openai==2.28.0
     # via -r requirements.in
 packaging==26.0
-    # via
-    #   limits
-    #   pytest
-pluggy==1.6.0
-    # via
-    #   pytest
-    #   pytest-cov
+    # via limits
 pycparser==3.0
     # via cffi
 pydantic==2.12.5
@@ -101,22 +89,11 @@ pydantic-core==2.41.5
     # via pydantic
 pydantic-settings==2.13.1
     # via -r requirements.in
-pygments==2.19.2
-    # via pytest
 pyjwt[crypto]==2.12.1
     # via
     #   -r requirements.in
     #   pyjwt
-pytest==9.0.2
-    # via
-    #   -r requirements.in
-    #   pytest-asyncio
-    #   pytest-cov
-pytest-asyncio==1.3.0
-    # via -r requirements.in
-pytest-cov==7.0.0
-    # via -r requirements.in
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via
     #   -r requirements.in
     #   pydantic-settings
@@ -127,15 +104,13 @@ pyyaml==6.0.3
     # via uvicorn
 requests==2.32.5
     # via deepl
-ruff==0.15.2
-    # via -r requirements.in
 slowapi==0.1.9
     # via -r requirements.in
 sniffio==1.3.1
     # via
     #   anthropic
     #   openai
-sqlalchemy==2.0.47
+sqlalchemy==2.0.48
     # via -r requirements.in
 starlette==0.52.1
     # via fastapi
@@ -144,12 +119,14 @@ tqdm==4.67.3
 typing-extensions==4.15.0
     # via
     #   anthropic
+    #   anyio
     #   fastapi
     #   limits
     #   openai
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
+    #   starlette
     #   typing-inspection
 typing-inspection==0.4.2
     # via
@@ -158,7 +135,7 @@ typing-inspection==0.4.2
     #   pydantic-settings
 urllib3==2.6.3
     # via requests
-uvicorn[standard]==0.41.0
+uvicorn[standard]==0.42.0
     # via -r requirements.in
 uvloop==0.22.1
     # via uvicorn
