@@ -1,0 +1,172 @@
+{
+  "app": {
+    "title": "Senten",
+    "subtitle": "AI-powered text refinement"
+  },
+  "nav": {
+    "translate": "Translate",
+    "write": "Write",
+    "history": "History",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "admin": "Admin"
+  },
+  "translate": {
+    "title": "Translation",
+    "source_placeholder": "Enter text to translate...",
+    "target_placeholder": "Translation appears here...",
+    "source_lang": "Source language",
+    "target_lang": "Target language",
+    "auto_detect": "Auto-detect",
+    "translate_btn": "Translate",
+    "clear_btn": "Clear"
+  },
+  "write": {
+    "title": "Style Optimization",
+    "source_placeholder": "Enter text to optimize...",
+    "target_placeholder": "Optimized text appears here...",
+    "target_lang": "Language",
+    "optimization": "Optimization",
+    "optimize_btn": "Optimize"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No history yet",
+    "restore": "Restore",
+    "delete": "Delete",
+    "clear_all": "Clear all"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "engine": "Engine"
+  },
+  "actions": {
+    "copy": "Copy",
+    "clear": "Clear",
+    "debug": "Debug",
+    "diff": "Diff",
+    "reset": "Reset",
+    "ctrl_enter": "Ctrl+Enter"
+  },
+  "status": {
+    "streaming": "Streaming...",
+    "detected": "Detected:",
+    "translating": "Translating\u2026",
+    "optimizing": "Optimizing\u2026"
+  },
+  "notifications": {
+    "copy_failed": "Copy failed",
+    "delete_failed": "Delete failed",
+    "debug_failed": "Debug request failed",
+    "copied": "Copied to clipboard!"
+  },
+  "theme": {
+    "light_blue": "Light (Blue)",
+    "dark_blue": "Dark (Blue)",
+    "light_violet": "Light (Violet)",
+    "dark_violet": "Dark (Violet)",
+    "custom_accent": "Custom accent color"
+  },
+  "stats": {
+    "words": "words",
+    "chars": "chars",
+    "char_limit": "/ 10,000 chars"
+  },
+  "usage": {
+    "translated_words": "Translated words (last 4 weeks)",
+    "optimized_words": "Optimized words (last 4 weeks)",
+    "llm_tokens": "LLM Tokens (last 4 weeks)",
+    "llm_tokens_request": "LLM Tokens this request"
+  },
+  "debug": {
+    "title": "🐛 LLM Debug Information",
+    "provider_model": "Provider / Model",
+    "system_prompt": "System Prompt",
+    "user_content": "User Content",
+    "raw_response": "Raw Response (before _strip_markdown)",
+    "processed_response": "Processed Response",
+    "token_usage": "Token Usage"
+  },
+  "no_engine": {
+    "title": "No Engine Configured",
+    "description": "Neither DeepL nor an LLM is set up. The app cannot perform translations."
+  },
+  "footer": {
+    "powered_by": "Powered by DeepL API and LLMs"
+  },
+  "languages": {
+    "auto": "Auto",
+    "more": "More...",
+    "more_langs": "More languages...",
+    "AR": "Arabic",
+    "BG": "Bulgarian",
+    "CS": "Czech",
+    "DA": "Danish",
+    "DE": "German",
+    "EL": "Greek",
+    "EN": "English",
+    "EN-GB": "English (UK)",
+    "EN-US": "English (US)",
+    "ES": "Spanish",
+    "ET": "Estonian",
+    "FI": "Finnish",
+    "FR": "French",
+    "HU": "Hungarian",
+    "ID": "Indonesian",
+    "IT": "Italian",
+    "JA": "Japanese",
+    "KO": "Koreanish",
+    "LT": "Lithuanian",
+    "LV": "Latvian",
+    "NB": "Norwegian",
+    "NL": "Dutch",
+    "PL": "Polish",
+    "PT": "Portuguese",
+    "PT-BR": "Portuguese (BR)",
+    "PT-PT": "Portuguese (PT)",
+    "RO": "Romanian",
+    "RU": "Russian",
+    "SK": "Slovak",
+    "SL": "Slovenian",
+    "SV": "Swedish",
+    "TR": "Turkish",
+    "UK": "Ukrainian",
+    "ZH": "Chinese"
+  },
+  "errors": {
+    "ERR_TRANSLATE_FAILED": "Translation failed. Please try again.",
+    "ERR_WRITE_FAILED": "Optimization failed. Please try again.",
+    "ERR_TEXT_EMPTY": "Text must not be empty.",
+    "ERR_LLM_NOT_CONFIGURED": "LLM is not configured. Please set LLM_PROVIDER in the configuration.",
+    "ERR_LLM_TIMEOUT": "LLM is not responding (timeout). Please try again or increase LLM_TIMEOUT.",
+    "ERR_LLM_AUTH": "LLM API key invalid or expired. Please check LLM_API_KEY in the configuration.",
+    "ERR_LLM_QUOTA": "LLM credits exhausted or rate limit reached. Please check your quota with the provider.",
+    "ERR_LLM_MODEL": "LLM model not available or invalid. Please check LLM_TRANSLATE_MODEL / LLM_WRITE_MODEL in the configuration.",
+    "ERR_LLM_CONNECTION": "LLM not reachable. Please check connection, LLM_BASE_URL, and service availability.",
+    "ERR_DEEPL_RATE_LIMIT": "DeepL rate limit reached. Please wait a moment and try again.",
+    "ERR_DEEPL_QUOTA": "DeepL quota exhausted. Please upgrade your plan or wait.",
+    "ERR_DEEPL_AUTH": "DeepL API key invalid. Please check configuration.",
+    "ERR_DEEPL_CONNECTION": "DeepL service unavailable. Please try again later.",
+    "ERR_INVALID_TARGET_LANG": "Invalid target language.",
+    "ERR_INVALID_SOURCE_LANG": "Invalid source language.",
+    "ERR_TEXT_TOO_LONG": "Text too long for LLM (max. {max_chars} characters).",
+    "ERR_STREAMING_LLM_ONLY": "Streaming is only available in LLM mode.",
+    "ERR_AUTH_REQUIRED": "Not logged in.",
+    "ERR_SESSION_INVALID": "Session expired or invalid.",
+    "ERR_SESSION_NOT_FOUND": "Settings not found.",
+    "ERR_SETTINGS_SAVE_FAILED": "Settings could not be saved.",
+    "ERR_PASSWORD_CHANGE_FAILED": "Password could not be changed.",
+    "ERR_PASSWORD_WRONG": "Current password incorrect.",
+    "ERR_PASSWORD_LOCAL_ONLY": "Password can only be changed with local authentication.",
+    "ERR_ADMIN_REQUIRED": "Admin rights required.",
+    "ERR_USER_NOT_FOUND": "User not found.",
+    "ERR_USER_EXISTS": "User already exists.",
+    "ERR_CANNOT_REMOVE_OWN_ADMIN": "You cannot remove your own admin rights.",
+    "ERR_CANNOT_DELETE_SELF": "You cannot delete yourself.",
+    "ERR_RATE_LIMIT": "Too many requests. Please wait a moment and try again.",
+    "ERR_HISTORY_NOT_FOUND": "History record not found."
+  }
+}

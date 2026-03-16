@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Senten — AI-powered text refinement via DeepL API">
+    <meta property="og:title" content="Senten">
+    <meta property="og:description" content="AI-powered text refinement via DeepL API">
+    <meta property="og:type" content="website">
+    <title>Senten</title>
+
+    <!-- FOUC Fix: set data-theme before CSS loads -->
+    <script>
+      document.documentElement.setAttribute('data-theme',
+        localStorage.getItem('theme') || 
+        (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-blue' : 'light-blue'));
+    </script>
+
+    <!-- Local Tailwind-compiled CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+
+    <!-- Design Tokens -->
+    <link rel="stylesheet" href="/static/css/design-tokens.css">
+
+    <!-- Favicon: served locally to avoid external dependency -->
+    <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+
+    <!-- Font Awesome — local -->
+    <link rel="stylesheet" href="/static/css/fontawesome.min.css">
+
+
+    <style>
+        /* ── Design Token Aliases (Legacy-Namen auf neue Tokens mappen) ── */
+        :root {
+            /* Background */
+            --bg:           var(--color-bg-default);
+            --surface:      var(--color-bg-surface);
+            --surface-alt:  var(--color-bg-subtle);
+            --surface-dark: var(--color-bg-elevated);
+            
+            /* Border */
+            --border:       var(--color-border-default);
+            
+            /* Text */
+            --text:         var(--color-text-default);
+            --text-muted:   var(--color-text-muted);
+            --text-sub:     var(--color-text-sub);
+            --text-weak:    var(--color-text-weak);
+            
+            /* Brand/Interactive */
+            --brand:        var(--color-interactive-default);
+            --brand-hover:  var(--color-interactive-hover);
+            --brand-light:  var(--color-interactive-subtle);
+            --brand-checked: var(--color-primary-300);
+            
+            /* Diff Colors */
+            --diff-add-bg:  var(--color-diff-add-bg);
+            --diff-add-fg:  var(--color-diff-add-fg);
+            --diff-del-bg:  var(--color-diff-del-bg);
+            --diff-del-fg:  var(--color-diff-del-fg);
+            --diff-del-dec: var(--color-diff-del-decoration);
+            
+            /* Badge Colors */
+            --badge-warn-bg: var(--color-warning-bg);
+            --badge-warn-fg: var(--color-warning-fg);
+            --badge-err-bg:  var(--color-error-bg);
+            --badge-err-fg:  var(--color-error-fg);
+            
+            /* Progress Fill */
+            --fill-norm:    var(--color-interactive-default);
+            --fill-warn:    var(--color-warning);
+            --fill-danger:  var(--color-error);
+        }
+
+        [data-theme="dark"],
+        [data-theme="dark-blue"],
+        [data-theme="dark-violet"] {
+            /* Dark Mode nutzt automatisch die neuen Token-Werte */
+            --surface-dark: var(--color-bg-default);
+            --brand-checked: var(--color-primary-300);
+        }
+
+        /* ── Reset ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { height: 100%; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100%;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            transition: background var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default);
+        }
+
+        /* ── Header ── */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow: visible;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            overflow-y: visible;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            text-decoration: none;
+        }
+        .brand img { height: 32px; }
+        .brand-name {
+            font-size: var(--text-base);
+            font-weight: var(--font-bold);
+            color: var(--text);
+            letter-spacing: var(--tracking-tight);
+        }
+
+        /* ── Usage bar ── */
+        .usage-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .usage-item { display: flex; align-items: center; gap: var(--space-2); }
+        .usage-item i { font-size: 11px; }
+        .usage-item strong { color: var(--text-sub); font-weight: var(--font-semibold); }
+        .usage-sep { width: 1px; height: 16px; background: var(--border); }
+        .usage-progress-wrap { display: flex; align-items: center; gap: var(--space-2); }
+        .usage-track {
+            width: 100px;
+            height: 6px;
+            background: var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        .usage-fill {
+            height: 100%;
+            border-radius: var(--radius-sm);
+            background: var(--fill-norm);
+            transition: width var(--duration-slow) var(--ease-default), background var(--duration-fast) var(--ease-default);
+        }
+        .usage-fill.warn    { background: var(--fill-warn); }
+        .usage-fill.danger  { background: var(--fill-danger); }
+        .limit-badge {
+            display: none;
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            padding: 2px var(--space-2);
+            border-radius: var(--radius-full);
+        }
+        .limit-badge.warn   { display: inline; background: var(--badge-warn-bg); color: var(--badge-warn-fg); }
+        .limit-badge.danger { display: inline; background: var(--badge-err-bg);  color: var(--badge-err-fg); }
+
+        /* ── Theme toggle (nutzt .theme-toggle aus design-tokens.css) ── */
+        .theme-toggle i { font-size: var(--text-sm); }
+
+        /* ── Theme Picker Dropdown ── */
+        .theme-picker {
+            position: relative;
+        }
+        .theme-chevron {
+            font-size: 10px;
+            margin-left: 2px;
+            transition: transform var(--duration-fast) var(--ease-default);
+        }
+        .theme-toggle[aria-expanded="true"] .theme-chevron {
+            transform: rotate(180deg);
+        }
+        .theme-dropdown {
+            position: absolute;
+            top: calc(100% + var(--space-2));
+            right: 0;
+            min-width: 220px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-dropdown);
+            z-index: 500;
+            padding: var(--space-2);
+            animation: toast-in var(--duration-fast) var(--ease-out);
+        }
+        .theme-option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            width: 100%;
+            padding: var(--space-2) var(--space-3);
+            border: none;
+            border-radius: var(--radius-lg);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: var(--text-sm);
+            font-family: inherit;
+            cursor: pointer;
+            text-align: left;
+            transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+        }
+        .theme-option:hover {
+            background: var(--surface-alt);
+            color: var(--text);
+        }
+        .theme-option.active {
+            background: var(--brand-light);
+            color: var(--brand);
+            font-weight: var(--font-semibold);
+        }
+        .theme-option-check {
+            margin-left: auto;
+            opacity: 0;
+            font-size: 11px;
+        }
+        .theme-option.active .theme-option-check {
+            opacity: 1;
+        }
+        .theme-separator {
+            height: 1px;
+            background: var(--border);
+            margin: var(--space-2) 0;
+        }
+        .theme-accent-section {
+            padding: var(--space-1) var(--space-2) var(--space-2);
+        }
+        .theme-accent-label {
+            display: block;
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--text-weak);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wider);
+            margin-bottom: var(--space-2);
+        }
+        .theme-accent-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        .theme-color-input {
+            width: 36px;
+            height: 28px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            padding: 2px;
+            background: none;
+            flex-shrink: 0;
+        }
+        .theme-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+        .theme-color-input::-webkit-color-swatch { border: none; border-radius: 4px; }
+        .theme-accent-reset {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: var(--text-xs);
+            font-family: inherit;
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+            white-space: nowrap;
+        }
+        .theme-accent-reset:hover {
+            background: var(--surface-alt);
+            color: var(--text);
+        }
+
+        /* ── User Menu ── */
+        .user-menu-wrap {
+            position: relative;
+        }
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: var(--text-sm);
+            font-family: inherit;
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+            white-space: nowrap;
+        }
+        .user-menu-btn:hover {
+            background: var(--surface-alt);
+            color: var(--text);
+        }
+        .user-menu-btn[aria-expanded="true"] .theme-chevron {
+            transform: rotate(180deg);
+        }
+        .user-logout-btn {
+            color: var(--color-danger, #dc2626);
+        }
+        .user-logout-btn:hover {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ── Main layout ── */
+        .main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        /* ── Tabs (nutzt .tab-btn aus design-tokens.css) ── */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+
+        /* ── Translator card ── */
+        .translator-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            margin-top: var(--space-5);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ── Lang bar ── */
+        .lang-bar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface-alt);
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+        .lang-options {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-3) var(--space-4);
+            flex-wrap: wrap;
+        }
+        .lang-options.right { justify-content: flex-end; }
+        .lang-radio { display: none; }
+        .lang-label {
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+            white-space: nowrap;
+        }
+        .lang-label:hover { background: var(--border); color: var(--text-sub); }
+        .lang-radio:checked + .lang-label { background: var(--brand-light); color: var(--brand); font-weight: var(--font-semibold); }
+        .source-select {
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-sub);
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+        .source-select:focus { background: var(--border); }
+        .source-select option { background: var(--surface); color: var(--text); }
+        .lang-select {
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            outline: none;
+            margin-left: var(--space-2);
+        }
+        .lang-select:hover { border-color: var(--brand); color: var(--text-sub); }
+        .lang-select:focus { border-color: var(--brand); background: var(--brand-light); }
+        .lang-select option { background: var(--surface); color: var(--text); }
+        /* deepl-only: hidden when LLM engine is active for that tab */
+        .deepl-only { display: inline-block; }
+        .llm-active .deepl-only { display: none; }
+        .detected-badge {
+            display: none;
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            background: var(--brand-light);
+            color: var(--brand);
+            margin-left: var(--space-2);
+        }
+        .detected-badge.visible { display: inline-flex; }
+        .lang-divider { width: 1px; background: var(--border); align-self: stretch; }
+        .lang-swap-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: var(--radius-full);
+            background: var(--surface);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+            flex-shrink: 0;
+            margin: 0 var(--space-2);
+        }
+        .lang-swap-btn:hover {
+            background: var(--brand-light);
+            color: var(--brand);
+        }
+        .lang-swap-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .lang-swap-btn:disabled:hover {
+            background: var(--surface);
+            color: var(--text-muted);
+        }
+
+        /* ── Text panes ── */
+        .panes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            flex: 1;
+            min-height: 0;
+        }
+        @media (max-width: 680px) {
+            /* Layout */
+            .panes { grid-template-columns: 1fr; }
+            .pane + .pane { border-left: none; border-top: 1px solid var(--border); }
+
+            /* Language bar: stack source + target vertically, no divider line */
+            .lang-bar { grid-template-columns: 1fr; }
+            .lang-divider { width: 100%; height: 1px; }
+            .lang-options.right { justify-content: flex-start; }
+
+            /* Smaller text panes — give more screen to content.
+               overflow-y: scroll forces contenteditable divs to respect max-height */
+            .pane-textarea,
+            .pane-output { min-height: 100px; max-height: 28vh; overflow-y: scroll; }
+
+            /* Hide desktop-only chrome */
+            .usage-bar { display: none; }
+            .header-inner { gap: var(--space-2); }
+            /* Hide keyboard shortcut hint and Debug button on mobile */
+            .mobile-hide { display: none !important; }
+
+            /* Toolbar: sticky at bottom of viewport — always visible without scrolling */
+            .toolbar {
+                position: sticky;
+                bottom: 0;
+                z-index: 10;
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                padding: var(--space-2) var(--space-3);
+                gap: var(--space-2);
+                flex-wrap: wrap;
+            }
+            .toolbar-right { font-size: var(--text-xs); flex-wrap: wrap; }
+
+            /* Larger touch targets for language radio labels */
+            .lang-label { padding: var(--space-2) var(--space-4); min-height: 40px;
+                          display: inline-flex; align-items: center; }
+
+            /* Main padding smaller on mobile */
+            .main { padding: var(--space-3); }
+
+            /* Translate card: less top margin, don't stretch to full viewport height */
+            .translator-card { margin-top: var(--space-3); flex: none; overflow: visible; }
+
+            /* Panes: natural height (no flex stretch) */
+            .panes { flex: none; }
+
+            /* Panes don't stretch to fill remaining space on mobile */
+            .pane-textarea,
+            .pane-output { flex: none; }
+        }
+        .pane {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .pane + .pane { border-left: 1px solid var(--border); background: var(--surface-alt); }
+        .pane-textarea, .pane-output {
+            flex: 1;
+            width: 100%;
+            padding: var(--space-5);
+            font-size: var(--text-base);
+            line-height: var(--leading-relaxed);
+            color: var(--text);
+            background: transparent;
+            border: none;
+            resize: none;
+            outline: none;
+            min-height: 200px;
+            overflow-y: auto;
+            font-family: inherit;
+        }
+        .pane-textarea::placeholder { color: var(--text-weak); }
+        .pane-output {
+            display: block;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            cursor: text;
+            overflow-y: auto;
+            /* max-height removed — flex:1 + min-height:0 on parent chain enables scrolling */
+        }
+        .pane-output:empty::before {
+            content: attr(placeholder);
+            color: var(--text-weak);
+            pointer-events: none;
+        }
+
+        /* ── Toolbar ── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-3) var(--space-4);
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            flex-shrink: 0;
+        }
+        .toolbar-left  { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+        .toolbar-right { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--text-weak); }
+
+        /* ── Buttons (nutzt .btn, .btn-primary, .btn-ghost aus design-tokens.css) ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 9px var(--space-4);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            border: none;
+            transition: background var(--duration-fast) var(--ease-default), box-shadow var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        /* ── Diff ── */
+        .diff-added {
+            background: var(--diff-add-bg);
+            color: var(--diff-add-fg);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .diff-removed {
+            background: var(--diff-del-bg);
+            color: var(--diff-del-fg);
+            text-decoration: line-through;
+            text-decoration-color: var(--diff-del-dec);
+            text-decoration-thickness: 2px;
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .changes-badge { font-size: var(--text-xs); font-weight: var(--font-semibold); display: none; gap: var(--space-1); }
+        .changes-badge.has-changes { display: inline-flex; }
+        .changes-badge .change-add { color: var(--color-success); }
+        .changes-badge .change-del { color: var(--color-error); }
+        /* Hide the separator dot when the changes badge is empty.
+           :has(~ ...) selects the separator when its following sibling badge is active. */
+        .stat-changes-sep { display: none; }
+        .stat-changes-sep:has(~ .changes-badge.has-changes) { display: inline; }
+
+        /* ── Error / Toast (nutzt .toast-error, .toast-success aus design-tokens.css) ── */
+        .error-toast, .toast-error {
+            position: fixed;
+            bottom: var(--space-6);
+            right: var(--space-6);
+            padding: var(--space-3) var(--space-4);
+            background: var(--color-error);
+            color: #ffffff;
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            z-index: 9999;
+            animation: toast-in var(--duration-normal) var(--ease-out);
+            max-width: 360px;
+        }
+        .success-toast, .toast-success {
+            position: fixed;
+            bottom: var(--space-6);
+            right: var(--space-6);
+            padding: var(--space-3) var(--space-4);
+            background: var(--color-success);
+            color: #ffffff;
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            z-index: 9999;
+            animation: toast-in var(--duration-normal) var(--ease-out);
+            max-width: 360px;
+        }
+        @keyframes toast-in { from { opacity: 0; transform: translateY(var(--space-2)); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── App root ── */
+        #app {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ── Tab panels ── */
+        .tab-panel { display: none; }
+        .tab-panel.active {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--text-weak);
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        /* ── Engine Toggle ── */
+        .engine-toggle-wrap {
+            display: none; /* shown by JS when llm_configured */
+            align-items: center;
+            gap: var(--space-2);
+            flex-direction: column;
+        }
+        .engine-toggle-wrap.visible { display: flex; }
+        .engine-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--text-sm);
+        }
+        .engine-label {
+            color: var(--text-muted);
+            font-weight: var(--font-medium);
+            user-select: none;
+        }
+        .engine-label.active { color: var(--text); font-weight: var(--font-semibold); }
+        /* The actual checkbox is hidden; the track acts as the visual toggle */
+        .engine-toggle-input { display: none; }
+        .engine-toggle-track {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: var(--border);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-default);
+            flex-shrink: 0;
+        }
+        .engine-toggle-input:checked + .engine-toggle-track { background: var(--brand); }
+        .engine-toggle-track::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform var(--duration-fast) var(--ease-default);
+        }
+        .engine-toggle-input:checked + .engine-toggle-track::after {
+            transform: translateX(18px);
+        }
+        .engine-info {
+            font-size: var(--text-xs);
+            color: var(--text-weak);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* ── Single-Engine Label (only one engine configured) ── */
+        .engine-single-label {
+            font-size: var(--text-sm);
+            color: var(--text-muted);
+            font-weight: var(--font-medium);
+            white-space: nowrap;
+        }
+
+        /* ── No-Engine Overlay ── */
+        #no-engine-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+        #no-engine-overlay.visible {
+            display: flex;
+        }
+        .no-engine-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        .no-engine-icon {
+            font-size: 2.5rem;
+            color: var(--color-warning, #f59e0b);
+        }
+        .no-engine-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text);
+        }
+        .no-engine-body {
+            font-size: var(--text-sm);
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .no-engine-hint {
+            font-size: var(--text-xs);
+            color: var(--text-weak);
+            font-family: monospace;
+            background: var(--surface-raised, var(--surface));
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--space-2) var(--space-3);
+            text-align: left;
+        }
+
+        /* ── Output Stats Bar ── */
+        .output-stats {
+            display: none; /* shown by JS once first result arrives */
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-5);
+            border-top: 1px solid var(--border);
+            font-size: var(--text-xs);
+            color: var(--text-weak);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            background: var(--surface-alt);
+        }
+        .output-stats.visible { display: flex; }
+        .stat-item { display: inline-flex; align-items: center; gap: var(--space-1); }
+        .stat-sep  { color: var(--border); user-select: none; }
+        .stat-llm-only { display: none; }
+        .stat-llm-only.visible { display: inline-flex; align-items: center; gap: var(--space-1); }
+
+        /* ── Diff Toggle active state ── */
+        #btn-diff-toggle.diff-active {
+            background: var(--brand-light);
+            color: var(--brand);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a class="brand" href="/" aria-label="Senten — Startseite">
+                <img src="/static/img/logo.svg"
+                     onerror="this.style.display='none'"
+                     alt="Senten Logo"
+                     width="32" height="32">
+                <span class="brand-name">Senten</span>
+            </a>
+
+            <div class="usage-bar" role="status" aria-live="polite" aria-label="API-Nutzung">
+                <!-- ── Cumulative 4-week Stats ── -->
+                <div id="cumulative-stats" class="cumulative-stats">
+                    <span data-i18n="usage.translated_words" title="Übersetzte Wörter (letzte 4 Wochen)">
+                        <i class="fas fa-language" aria-hidden="true"></i>
+                        <span id="cum-words-translate">0</span>
+                    </span>
+                    <span class="stats-sep">·</span>
+                    <span data-i18n="usage.optimized_words" title="Optimierte Wörter (letzte 4 Wochen)">
+                        <i class="fas fa-pen" aria-hidden="true"></i>
+                        <span id="cum-words-write">0</span>
+                    </span>
+                    <span class="stats-sep" id="cum-llm-sep">·</span>
+                    <span id="cum-llm-stats" data-i18n="usage.llm_tokens" title="LLM Tokens (letzte 4 Wochen)">
+                        <i class="fas fa-microchip" aria-hidden="true"></i>
+                        <span id="cum-tokens-in">0</span> in · <span id="cum-tokens-out">0</span> out · <span id="cum-tokens-total">0</span> gesamt
+                    </span>
+                    <!-- Per-request LLM token display (shown after each LLM call) -->
+                    <span class="stats-sep" id="llm-req-sep" style="display:none">·</span>
+                    <span id="llm-token-display" style="display:none" data-i18n="usage.llm_tokens_request" title="LLM Tokens dieser Anfrage">
+                        <i class="fas fa-bolt" aria-hidden="true"></i>
+                        <span id="llm-req-tokens-in">0</span> in · <span id="llm-req-tokens-out">0</span> out
+                    </span>
+                </div>
+            </div>
+
+            <!-- Theme Picker -->
+            <div class="theme-picker" id="theme-picker">
+                <button class="theme-toggle" id="theme-toggle-btn"
+                        aria-haspopup="listbox" aria-expanded="false"
+                        title="Theme ändern (Strg+D für Hell/Dunkel)">
+                    <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
+                    <span id="theme-label">Hell (Blau)</span>
+                    <i class="fas fa-chevron-down theme-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="theme-dropdown" id="theme-dropdown" role="listbox" aria-label="Theme wählen" hidden>
+                    <div class="theme-option-group">
+                        <button class="theme-option" data-theme="light-blue" role="option">
+                            <i class="fas fa-sun" aria-hidden="true"></i>
+                            <span data-i18n="theme.light_blue">Hell (Blau)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                        <button class="theme-option" data-theme="dark-blue" role="option">
+                            <i class="fas fa-moon" aria-hidden="true"></i>
+                            <span data-i18n="theme.dark_blue">Dunkel (Blau)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                        <button class="theme-option" data-theme="light-violet" role="option">
+                            <i class="fas fa-sun" style="color:#7c3aed" aria-hidden="true"></i>
+                            <span data-i18n="theme.light_violet">Hell (Violett)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                        <button class="theme-option" data-theme="dark-violet" role="option">
+                            <i class="fas fa-moon" style="color:#a78bfa" aria-hidden="true"></i>
+                            <span data-i18n="theme.dark_violet">Dunkel (Violett)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="theme-separator" role="separator"></div>
+                    <div class="theme-accent-section">
+                        <span class="theme-accent-label" data-i18n="theme.custom_accent">Eigene Akzentfarbe</span>
+                        <div class="theme-accent-row">
+                            <input type="color" id="theme-accent-color" class="theme-color-input"
+                                   value="#0066ff" title="Akzentfarbe wählen"
+                                   aria-label="Eigene Akzentfarbe wählen">
+                            <button class="theme-accent-reset" id="theme-accent-reset" title="Akzentfarbe zurücksetzen">
+                                <i class="fas fa-undo-alt" aria-hidden="true"></i> <span data-i18n="actions.reset">Zurücksetzen</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Menu (shown via JS when logged in) -->
+            <div id="user-menu-wrap" class="user-menu-wrap" hidden>
+                <button id="user-menu-btn" class="user-menu-btn"
+                        aria-haspopup="true" aria-expanded="false"
+                        title="Benutzerprofil">
+                    <i class="fas fa-user-circle" aria-hidden="true"></i>
+                    <span id="user-display-name">Profil</span>
+                    <i class="fas fa-chevron-down theme-chevron" aria-hidden="true"></i>
+                </button>
+                <div id="user-dropdown" class="theme-dropdown" hidden>
+                    <!-- Language selector in user dropdown -->
+                    <div class="theme-option-group">
+                        <div class="theme-accent-section" style="padding: var(--space-2);">
+                            <span class="theme-accent-label" data-i18n="settings.language">Sprache</span>
+                            <select id="ui-language-select" class="lang-select" style="width: 100%; margin-top: var(--space-2);" aria-label="UI-Sprache">
+                                <option value="en">English</option>
+                                <option value="de">Deutsch</option>
+                                <option value="fr">Français</option>
+                                <option value="it">Italiano</option>
+                                <option value="es">Español</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="theme-separator" role="separator"></div>
+                    <div id="user-dropdown-admin" hidden>
+                        <a href="/admin" class="theme-option">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                            <span data-i18n="nav.admin">Admin</span>
+                        </a>
+                        <div class="theme-separator" role="separator"></div>
+                    </div>
+                    <button id="user-logout-btn" class="theme-option user-logout-btn">
+                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                        <span data-i18n="nav.logout">Abmelden</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist" aria-label="Funktionen">
+            <button id="tab-translate" class="tab-btn active" data-tab="translate"
+                    role="tab" aria-selected="true" aria-controls="translate-panel">
+                <i class="fas fa-language" aria-hidden="true"></i> <span data-i18n="nav.translate">Übersetzen</span>
+            </button>
+            <button id="tab-write" class="tab-btn" data-tab="write"
+                    role="tab" aria-selected="false" aria-controls="write-panel">
+                <i class="fas fa-pencil-alt" aria-hidden="true"></i> <span data-i18n="nav.write">Optimieren</span>
+            </button>
+            <button id="tab-history" class="tab-btn" data-tab="history"
+                    role="tab" aria-selected="false" aria-controls="history-panel">
+                <i class="fas fa-history" aria-hidden="true"></i> <span data-i18n="nav.history">Verlauf</span>
+            </button>
+        </div>
+
+        <!-- ── Translate Panel ── -->
+        <div id="translate-panel" class="tab-panel active" role="tabpanel" aria-labelledby="tab-translate">
+            <div class="translator-card">
+
+                <!-- Language bar -->
+                <div class="lang-bar">
+                    <div class="lang-options" role="group" aria-label="Quellsprache">
+                        <input type="radio" name="source-lang-radio" id="sl-auto" value="" checked class="lang-radio">
+                        <label for="sl-auto" class="lang-label" data-i18n="languages.auto">Auto</label>
+                        <input type="radio" name="source-lang-radio" id="sl-de"   value="DE" class="lang-radio">
+                        <label for="sl-de"   class="lang-label" data-i18n="languages.DE">Deutsch</label>
+                        <input type="radio" name="source-lang-radio" id="sl-en"   value="EN" class="lang-radio">
+                        <label for="sl-en"   class="lang-label" data-i18n="languages.EN">Englisch</label>
+                        <select id="source-lang" class="lang-select" aria-label="Weitere Quellsprachen">
+                            <option value="" disabled selected data-i18n="languages.more">Weitere...</option>
+                            <option value="AR" data-i18n="languages.AR">Arabisch</option>
+                            <option value="BG" data-i18n="languages.BG">Bulgarisch</option>
+                            <option value="CS" data-i18n="languages.CS">Tschechisch</option>
+                            <option value="DA" data-i18n="languages.DA">Dänisch</option>
+                            <option value="EL" data-i18n="languages.EL">Griechisch</option>
+                            <option value="ES" data-i18n="languages.ES">Spanisch</option>
+                            <option value="ET" data-i18n="languages.ET">Estnisch</option>
+                            <option value="FI" data-i18n="languages.FI">Finnisch</option>
+                            <option value="FR" data-i18n="languages.FR">Französisch</option>
+                            <option value="HU" data-i18n="languages.HU">Ungarisch</option>
+                            <option value="ID" data-i18n="languages.ID">Indonesisch</option>
+                            <option value="IT" data-i18n="languages.IT">Italienisch</option>
+                            <option value="JA" data-i18n="languages.JA">Japanisch</option>
+                            <option value="KO" data-i18n="languages.KO">Koreanisch</option>
+                            <option value="LT" data-i18n="languages.LT">Litauisch</option>
+                            <option value="LV" data-i18n="languages.LV">Lettisch</option>
+                            <option value="NB" data-i18n="languages.NB">Norwegisch</option>
+                            <option value="NL" data-i18n="languages.NL">Niederländisch</option>
+                            <option value="PL" data-i18n="languages.PL">Polnisch</option>
+                            <option value="PT" data-i18n="languages.PT">Portugiesisch</option>
+                            <option value="RO" data-i18n="languages.RO">Rumänisch</option>
+                            <option value="RU" data-i18n="languages.RU">Russisch</option>
+                            <option value="SK" data-i18n="languages.SK">Slowakisch</option>
+                            <option value="SL" data-i18n="languages.SL">Slowenisch</option>
+                            <option value="SV" data-i18n="languages.SV">Schwedisch</option>
+                            <option value="TR" data-i18n="languages.TR">Türkisch</option>
+                            <option value="UK" data-i18n="languages.UK">Ukrainisch</option>
+                            <option value="ZH" data-i18n="languages.ZH">Chinesisch</option>
+                        </select>
+                        <span id="detected-lang-display" class="detected-badge" aria-live="polite"></span>
+                    </div>
+                    <!-- Language swap button -->
+                    <button id="btn-swap-langs" class="lang-swap-btn" title="Sprachen tauschen" aria-label="Quell- und Zielsprache tauschen">
+                        <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+                    </button>
+                    <div class="lang-options right" role="group" aria-label="Zielsprache">
+                        <input type="radio" name="target-lang" id="tl-de"    value="DE"    checked class="lang-radio">
+                        <label for="tl-de"    class="lang-label" data-i18n="languages.DE">Deutsch</label>
+                        <input type="radio" name="target-lang" id="tl-en-us" value="EN-US" class="lang-radio">
+                        <label for="tl-en-us" class="lang-label" data-i18n="languages.EN-US">Englisch (US)</label>
+                        <select id="target-lang-select" class="lang-select" aria-label="Weitere Zielsprachen">
+                            <option value="" disabled selected data-i18n="languages.more_langs">Weitere Sprachen...</option>
+                            <option value="EN-GB" data-i18n="languages.EN-GB">Englisch (UK)</option>
+                            <option value="FR" data-i18n="languages.FR">Französisch</option>
+                            <option value="ES" data-i18n="languages.ES">Spanisch</option>
+                            <option value="IT" data-i18n="languages.IT">Italienisch</option>
+                            <option value="NL" data-i18n="languages.NL">Niederländisch</option>
+                            <option value="PL" data-i18n="languages.PL">Polnisch</option>
+                            <option value="RU" data-i18n="languages.RU">Russisch</option>
+                            <option value="PT-PT" data-i18n="languages.PT-PT">Portugiesisch</option>
+                            <option value="ZH" data-i18n="languages.ZH">Chinesisch</option>
+                            <option value="JA" data-i18n="languages.JA">Japanisch</option>
+                            <option value="KO" data-i18n="languages.KO">Koreanisch</option>
+                            <option value="TR" data-i18n="languages.TR">Türkisch</option>
+                            <option value="UK" data-i18n="languages.UK">Ukrainisch</option>
+                            <option value="AR" data-i18n="languages.AR">Arabisch</option>
+                            <option value="BG" data-i18n="languages.BG">Bulgarisch</option>
+                            <option value="CS" data-i18n="languages.CS">Tschechisch</option>
+                            <option value="DA" data-i18n="languages.DA">Dänisch</option>
+                            <option value="EL" data-i18n="languages.EL">Griechisch</option>
+                            <option value="ET" data-i18n="languages.ET">Estnisch</option>
+                            <option value="FI" data-i18n="languages.FI">Finnisch</option>
+                            <option value="HU" data-i18n="languages.HU">Ungarisch</option>
+                            <option value="ID" data-i18n="languages.ID">Indonesisch</option>
+                            <option value="LT" data-i18n="languages.LT">Litauisch</option>
+                            <option value="LV" data-i18n="languages.LV">Lettisch</option>
+                            <option value="NB" data-i18n="languages.NB">Norwegisch</option>
+                            <option value="RO" data-i18n="languages.RO">Rumänisch</option>
+                            <option value="SK" data-i18n="languages.SK">Slowakisch</option>
+                            <option value="SL" data-i18n="languages.SL">Slowenisch</option>
+                            <option value="SV" data-i18n="languages.SV">Schwedisch</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Text panes -->
+                <div class="panes">
+                    <div class="pane">
+                        <textarea id="input-text-translate"
+                                  class="pane-textarea"
+                                  placeholder="Text eingeben…"
+                                  data-i18n-placeholder="translate.source_placeholder"
+                                  aria-label="Eingabetext für Übersetzung"
+                                  maxlength="10000"></textarea>
+                    </div>
+                     <div class="pane">
+                          <textarea id="output-text-translate"
+                                    class="pane-textarea"
+                                    placeholder="Übersetzung erscheint hier…"
+                                    data-i18n-placeholder="translate.target_placeholder"
+                                    aria-label="Übersetzungsergebnis"
+                                    readonly></textarea>
+                          <div id="stream-overlay-translate" class="stream-overlay" style="display:none;" aria-live="polite" aria-label="Übersetzung läuft">
+                              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+                              <span data-i18n="status.translating">Übersetzen…</span>
+                          </div>
+<!-- Output Stats Bar -->
+                          <div id="output-stats-translate" class="output-stats" aria-label="Ausgabe-Statistiken" aria-live="polite">
+                              <span class="stat-item">
+                                  <i class="fas fa-align-left" aria-hidden="true"></i>
+                                  <span id="output-words-translate">0</span> <span data-i18n="stats.words">Wörter</span>
+                              </span>
+                              <span class="stat-sep" aria-hidden="true">·</span>
+                              <span class="stat-item">
+                                  <i class="fas fa-text-width" aria-hidden="true"></i>
+                                  <span id="output-chars-translate">0</span> <span data-i18n="stats.chars">Z.</span>
+                              </span>
+                          </div>
+                          <!-- LLM Debug Panel — nur für Admins, nach LLM-Call befüllt -->
+                          <div id="debug-panel-translate" style="display:none;">
+                              <details class="debug-panel" style="border-radius:0; border-left:none; border-right:none; border-bottom:none;">
+                                  <summary data-i18n="debug.title">🐛 LLM Debug-Informationen</summary>
+                                  <div class="debug-panel-body">
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.provider_model">Provider / Modell</h4>
+                                          <pre id="debug-translate-meta"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.system_prompt">System Prompt</h4>
+                                          <pre id="debug-translate-system"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.user_content">User Content</h4>
+                                          <pre id="debug-translate-user"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.raw_response">Raw Response (vor _strip_markdown)</h4>
+                                          <pre id="debug-translate-raw"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.processed_response">Verarbeitete Response <span id="debug-translate-diff-badge"></span></h4>
+                                          <pre id="debug-translate-processed"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.token_usage">Token-Nutzung</h4>
+                                          <pre id="debug-translate-usage"></pre>
+                                      </div>
+                                  </div>
+                              </details>
+                          </div>
+                     </div>
+                 </div>
+
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button id="btn-translate" class="btn btn-primary" aria-label="Text übersetzen (Strg+Enter)">
+                            <i class="fas fa-bolt" aria-hidden="true"></i> <span data-i18n="translate.translate_btn">Übersetzen</span>
+                        </button>
+                        <button id="btn-to-write" class="btn btn-ghost" aria-label="Übersetzung zum Optimieren übernehmen">
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i> <span data-i18n="nav.write">Optimieren</span>
+                        </button>
+                        <button id="btn-copy-translate" class="btn btn-ghost" style="display:none" aria-label="Übersetzung kopieren">
+                            <i class="fas fa-copy" aria-hidden="true"></i> <span data-i18n="actions.copy">Kopieren</span>
+                        </button>
+                        <button id="btn-clear-translate" class="btn btn-ghost" aria-label="Eingabe löschen">
+                            <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="actions.clear">Löschen</span>
+                        </button>
+                        <!-- Debug Toggle — nur für Admins, nur bei LLM aktiv (via JS gesteuert) -->
+                        <button id="btn-debug-translate" class="btn btn-ghost mobile-hide"
+                                style="display:none" aria-label="LLM Debug-Informationen anzeigen"
+                                title="Debug: Prompt &amp; Response anzeigen">
+                            <i class="fas fa-bug" aria-hidden="true"></i> <span data-i18n="actions.debug">Debug</span>
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <!-- Engine Toggle (nur sichtbar wenn LLM konfiguriert) -->
+                        <div id="translate-engine-toggle" class="engine-toggle-wrap" aria-label="Engine wählen">
+                            <div class="engine-toggle-row">
+                                <span class="engine-label" id="translate-label-deepl">DeepL</span>
+                                <input type="checkbox" id="translate-engine-checkbox" class="engine-toggle-input"
+                                       role="switch" aria-checked="false" aria-label="LLM-Modus aktivieren">
+                                <label for="translate-engine-checkbox" class="engine-toggle-track"></label>
+                                <span class="engine-label" id="translate-label-llm">LLM</span>
+                            </div>
+                            <div class="engine-info" id="translate-engine-info"></div>
+                        </div>
+                        <i class="fas fa-keyboard" aria-hidden="true"></i>
+                        <span id="chars-used-translate">0</span> <span data-i18n="stats.char_limit">/ 10.000 Zeichen</span>
+                        <span class="mobile-hide">&nbsp;·&nbsp; <span data-i18n="actions.ctrl_enter">Strg+Enter</span></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── Write / Optimise Panel ── -->
+        <div id="write-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-write">
+            <div class="translator-card">
+
+                <!-- Language bar -->
+                <div class="lang-bar">
+                    <div class="lang-options" role="group" aria-label="Sprache für Optimierung">
+                        <span style="font-size:13px;font-weight:500;color:var(--text-sub);padding:6px 4px;" data-i18n="write.target_lang">Sprache:</span>
+                        <input type="radio" name="write-target-lang" id="wl-de"    value="DE"    checked class="lang-radio">
+                        <label for="wl-de"    class="lang-label" data-i18n="languages.DE">Deutsch</label>
+                        <input type="radio" name="write-target-lang" id="wl-en-us" value="EN-US" class="lang-radio">
+                        <label for="wl-en-us" class="lang-label" data-i18n="languages.EN-US">Englisch (US)</label>
+                        <select id="write-target-lang-select" class="lang-select" aria-label="Weitere Sprachen für Optimierung">
+                            <option value="" disabled selected data-i18n="languages.more_langs">Weitere Sprachen...</option>
+                            <option value="EN-GB" data-i18n="languages.EN-GB">Englisch (UK)</option>
+                            <option value="FR" data-i18n="languages.FR">Französisch</option>
+                            <option value="ES" data-i18n="languages.ES">Spanisch</option>
+                            <option value="IT" data-i18n="languages.IT">Italienisch</option>
+                            <option value="NL" data-i18n="languages.NL">Niederländisch</option>
+                            <option value="PL" data-i18n="languages.PL">Polnisch</option>
+                            <option value="RU" data-i18n="languages.RU">Russisch</option>
+                            <option value="PT-PT" data-i18n="languages.PT-PT">Portugiesisch</option>
+                            <option value="TR" data-i18n="languages.TR">Türkisch</option>
+                            <option value="ZH" data-i18n="languages.ZH">Chinesisch</option>
+                            <option value="JA" data-i18n="languages.JA">Japanisch</option>
+                            <option value="KO" data-i18n="languages.KO">Koreanisch</option>
+                            <option value="UK" data-i18n="languages.UK">Ukrainisch</option>
+                            <option value="AR" data-i18n="languages.AR">Arabisch</option>
+                            <option value="BG" data-i18n="languages.BG">Bulgarisch</option>
+                            <option value="CS" data-i18n="languages.CS">Tschechisch</option>
+                            <option value="DA" data-i18n="languages.DA">Dänisch</option>
+                            <option value="EL" data-i18n="languages.EL">Griechisch</option>
+                            <option value="ET" data-i18n="languages.ET">Estnisch</option>
+                            <option value="FI" data-i18n="languages.FI">Finnisch</option>
+                            <option value="HU" data-i18n="languages.HU">Ungarisch</option>
+                            <option value="ID" data-i18n="languages.ID">Indonesisch</option>
+                            <option value="LT" data-i18n="languages.LT">Litauisch</option>
+                            <option value="LV" data-i18n="languages.LV">Lettisch</option>
+                            <option value="NB" data-i18n="languages.NB">Norwegisch</option>
+                            <option value="RO" data-i18n="languages.RO">Rumänisch</option>
+                            <option value="SK" data-i18n="languages.SK">Slowakisch</option>
+                            <option value="SL" data-i18n="languages.SL">Slowenisch</option>
+                            <option value="SV" data-i18n="languages.SV">Schwedisch</option>
+                        </select>
+                    </div>
+                    <div class="lang-divider" aria-hidden="true"></div>
+                    <div class="lang-options right" aria-hidden="true">
+                        <span style="font-size:13px;font-weight:500;color:var(--text-weak);padding:6px 4px;" data-i18n="write.optimization">Optimierung</span>
+                    </div>
+                </div>
+
+                <!-- Text panes -->
+                <div class="panes">
+                    <div class="pane">
+                        <textarea id="input-text-write"
+                                  class="pane-textarea"
+                                  placeholder="Text eingeben…"
+                                  data-i18n-placeholder="write.source_placeholder"
+                                  aria-label="Eingabetext für Optimierung"
+                                  maxlength="10000"></textarea>
+                    </div>
+                    <div class="pane">
+                         <div id="output-text-write"
+                              class="pane-output"
+                              contenteditable="false"
+                              role="textbox"
+                              aria-multiline="true"
+                              aria-label="Optimierungsergebnis mit Diff-Anzeige"
+                              placeholder="Optimierter Text erscheint hier…"
+                              data-i18n-placeholder="write.target_placeholder"></div>
+                          <div id="stream-overlay-write" class="stream-overlay" style="display:none;" aria-live="polite" aria-label="Optimierung läuft">
+                              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+                              <span data-i18n="status.optimizing">Optimieren…</span>
+                          </div>
+<!-- Output Stats Bar -->
+                          <div id="output-stats-write" class="output-stats" aria-label="Ausgabe-Statistiken" aria-live="polite">
+                              <span class="stat-item">
+                                  <i class="fas fa-align-left" aria-hidden="true"></i>
+                                  <span id="output-words-write">0</span> <span data-i18n="stats.words">Wörter</span>
+                              </span>
+                              <span class="stat-sep" aria-hidden="true">·</span>
+                              <span class="stat-item">
+                                  <i class="fas fa-text-width" aria-hidden="true"></i>
+                                  <span id="output-chars-write">0</span> <span data-i18n="stats.chars">Z.</span>
+                              </span>
+                              <span class="stat-sep stat-changes-sep" aria-hidden="true">·</span>
+                              <span id="write-changes" class="stat-item changes-badge" aria-live="polite"></span>
+                          </div>
+                          <!-- LLM Debug Panel — nur für Admins, nach LLM-Call befüllt -->
+                          <div id="debug-panel-write" style="display:none;">
+                              <details class="debug-panel" style="border-radius:0; border-left:none; border-right:none; border-bottom:none;">
+                                  <summary data-i18n="debug.title">🐛 LLM Debug-Informationen</summary>
+                                  <div class="debug-panel-body">
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.provider_model">Provider / Modell</h4>
+                                          <pre id="debug-write-meta"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.system_prompt">System Prompt</h4>
+                                          <pre id="debug-write-system"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.user_content">User Content</h4>
+                                          <pre id="debug-write-user"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.raw_response">Raw Response (vor _strip_markdown)</h4>
+                                          <pre id="debug-write-raw"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.processed_response">Verarbeitete Response <span id="debug-write-diff-badge"></span></h4>
+                                          <pre id="debug-write-processed"></pre>
+                                      </div>
+                                      <div class="debug-section">
+                                          <h4 data-i18n="debug.token_usage">Token-Nutzung</h4>
+                                          <pre id="debug-write-usage"></pre>
+                                      </div>
+                                  </div>
+                              </details>
+                          </div>
+                     </div>
+                 </div>
+
+<!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button id="btn-write" class="btn btn-primary" aria-label="Text optimieren (Strg+Enter)">
+                            <i class="fas fa-bolt" aria-hidden="true"></i> <span data-i18n="write.optimize_btn">Optimieren</span>
+                        </button>
+                        <button id="btn-to-translate" class="btn btn-ghost" aria-label="Optimierten Text übersetzen">
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i> <span data-i18n="nav.translate">Übersetzen</span>
+                        </button>
+                        <button id="btn-copy-write" class="btn btn-ghost" style="display:none" aria-label="Optimierten Text kopieren">
+                             <i class="fas fa-copy" aria-hidden="true"></i> <span data-i18n="actions.copy">Kopieren</span>
+                        </button>
+                        <div class="engine-toggle-wrap" id="write-diff-toggle-wrap">
+                            <button id="btn-diff-toggle" class="btn btn-ghost" aria-label="Diff-Anzeige ein-/ausschalten" aria-pressed="true" title="Änderungen hervorheben (ein/aus)">
+                                <i class="fas fa-highlighter" aria-hidden="true"></i> <span data-i18n="actions.diff">Diff</span>
+                            </button>
+                        </div>
+                        <button id="btn-clear-write" class="btn btn-ghost" aria-label="Eingabe löschen">
+                            <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="actions.clear">Löschen</span>
+                        </button>
+                        <!-- Debug Toggle — nur für Admins, nur bei LLM aktiv (via JS gesteuert) -->
+                        <button id="btn-debug-write" class="btn btn-ghost mobile-hide"
+                                style="display:none" aria-label="LLM Debug-Informationen anzeigen"
+                                title="Debug: Prompt &amp; Response anzeigen">
+                            <i class="fas fa-bug" aria-hidden="true"></i> <span data-i18n="actions.debug">Debug</span>
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <!-- Engine Toggle (nur sichtbar wenn LLM konfiguriert) -->
+                        <div id="write-engine-toggle" class="engine-toggle-wrap" aria-label="Engine wählen">
+                            <div class="engine-toggle-row">
+                                <span class="engine-label" id="write-label-deepl">DeepL</span>
+                                <input type="checkbox" id="write-engine-checkbox" class="engine-toggle-input"
+                                       role="switch" aria-checked="false" aria-label="LLM-Modus aktivieren">
+                                <label for="write-engine-checkbox" class="engine-toggle-track"></label>
+                                <span class="engine-label" id="write-label-llm">LLM</span>
+                            </div>
+                            <div class="engine-info" id="write-engine-info"></div>
+                        </div>
+                         <i class="fas fa-keyboard" aria-hidden="true"></i>
+                         <span id="chars-used-write">0</span> <span data-i18n="stats.char_limit">/ 10.000 Zeichen</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── History Panel ── -->
+        <div id="history-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-history">
+            <div class="translator-card">
+                <div class="history-header">
+                    <h2 style="font-size:18px;font-weight:600;margin:0;" data-i18n="history.title">Übersetzungsverlauf</h2>
+                    <button id="clear-history-btn" class="btn btn-ghost" title="Verlauf löschen">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i> <span data-i18n="history.clear_all">Alles löschen</span>
+                    </button>
+                </div>
+                <div id="history-list" class="history-list">
+                    <div class="history-empty" style="text-align:center;padding:40px 20px;color:var(--text-muted);">
+                        <i class="fas fa-history" style="font-size:32px;margin-bottom:12px;opacity:0.5;"></i>
+                        <p data-i18n="history.empty">Noch keine Übersetzungen gespeichert.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        Senten {{ version }} &copy; {{ current_year }} &middot; <span data-i18n="footer.powered_by">Powered by DeepL API und LLMs</span> &middot;
+        <a href="https://github.com/TheBigS1981/Senten" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <i class="fab fa-github" aria-hidden="true"></i>
+        </a>
+    </footer>
+
+</div>
+
+<!-- ── No-Engine Overlay ── -->
+<div id="no-engine-overlay" role="alertdialog" aria-modal="true"
+     aria-labelledby="no-engine-title" aria-describedby="no-engine-desc">
+    <div class="no-engine-card">
+        <div class="no-engine-icon" aria-hidden="true">
+            <i class="fas fa-triangle-exclamation"></i>
+        </div>
+        <p class="no-engine-title" id="no-engine-title" data-i18n="no_engine.title">Keine Engine konfiguriert</p>
+        <p class="no-engine-body" id="no-engine-desc" data-i18n="no_engine.description">
+            Weder DeepL noch ein LLM ist eingerichtet.<br>
+            Die App kann keine Übersetzungen durchführen.
+        </p>
+        <div class="no-engine-hint">
+            DEEPL_API_KEY=&lt;dein-key&gt;<br>
+            — oder —<br>
+            LLM_PROVIDER=openai<br>
+            LLM_API_KEY=&lt;dein-key&gt;
+        </div>
+    </div>
+</div>
+
+<!-- jsdiff — local -->
+<script nonce="{{ csp_nonce }}" src="/static/js/diff.min.js"></script>
+<script nonce="{{ csp_nonce }}" src="/static/js/app.js"></script>
+<script nonce="{{ csp_nonce }}" src="/static/js/keyboard-shortcuts.js"></script>
+</body>
+</html>

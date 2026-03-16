@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light-blue">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senten — Benutzerverwaltung</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style nonce="{{ csp_nonce }}">
+    :root {
+      --bg: #f9fafb; --surface: #fff; --border: #e5e7eb;
+      --text: #111827; --text-muted: #6b7280;
+      --color-interactive-default: #0066ff;
+      --color-interactive-subtle: #0066ff18;
+      --brand: #0066ff;
+    }
+    [data-theme^="dark"] {
+      --bg: #0f172a; --surface: #1e293b; --border: #334155;
+      --text: #f1f5f9; --text-muted: #94a3b8;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px; font-size: 0.875rem;
+      font-weight: 500; cursor: pointer; border: none; transition: background .15s;
+    }
+    .btn-primary {
+      background: var(--color-interactive-default); color: #fff;
+    }
+    .btn-primary:hover { opacity: .9; }
+    .btn-ghost {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--border); }
+    .user-email {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <a href="/" class="admin-back"><i class="fas fa-arrow-left"></i> Zurück zur App</a>
+    <h1><i class="fas fa-users" style="margin-right:8px"></i>Benutzerverwaltung</h1>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-toolbar">
+      <button id="btn-create-user" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Benutzer anlegen
+      </button>
+    </div>
+    <div id="user-list" class="user-list">
+      <p style="color:var(--text-muted)">Laden…</p>
+    </div>
+  </main>
+
+  <!-- Modal: Benutzer anlegen -->
+  <dialog id="modal-create" class="admin-modal">
+    <h2>Neuer Benutzer</h2>
+    <form id="form-create" novalidate>
+      <label>
+        Benutzername
+        <input type="text" name="username" required minlength="3"
+               placeholder="min. 3 Zeichen, nur a-z 0-9 _.-" class="form-input">
+      </label>
+      <label>
+        Passwort
+        <input type="password" name="password" required minlength="8"
+               placeholder="min. 8 Zeichen" class="form-input">
+      </label>
+      <label>
+        Anzeigename (optional)
+        <input type="text" name="display_name" class="form-input">
+      </label>
+      <label>
+        E-Mail (optional, für Gravatar)
+        <input type="email" name="email" class="form-input"
+               placeholder="user@example.com">
+      </label>
+      <label style="flex-direction:row;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" name="is_admin">
+        Admin-Rechte
+      </label>
+      <div id="create-error" class="login-error" hidden style="margin-top:8px"></div>
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-create" class="btn btn-ghost">Abbrechen</button>
+        <button type="submit" class="btn btn-primary">Anlegen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script nonce="{{ csp_nonce }}">
+    (function() {
+      const t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <script src="/static/js/admin.js" nonce="{{ csp_nonce }}"></script>
+</body>
+</html>

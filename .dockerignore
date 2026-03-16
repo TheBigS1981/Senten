@@ -1,0 +1,65 @@
+# Git
+.git/
+.gitignore
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Python virtual environments
+venv/
+venv2/
+.venv/
+*env/
+*-env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Logs
+*.log
+app.log
+server.log
+debug.log
+
+# Database (volume-mounted at runtime)
+data/
+*.db
+*.db-journal
+
+# Documentation & planning
+docs/
+PLAN.md
+README.md
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore

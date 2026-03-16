@@ -1,0 +1,735 @@
+/**
+ * Senten Design Tokens
+ * 
+ * Single Source of Truth für alle visuellen Design-Entscheidungen.
+ * Nutzung: @import in CSS oder direkter Zugriff auf CSS Custom Properties.
+ * 
+ * Aufbau:
+ * 1. Color System     — Primär-/Neutral-Palette + Semantische Aliases
+ * 2. Typography       — Type Scale, Font Stacks, Line Heights
+ * 3. Spacing          — 8pt Grid System
+ * 4. Shape            — Border Radius Scale
+ * 5. Elevation        — Shadow/Shadow System
+ * 6. Motion           — Duration + Easing Tokens
+ * 7. Component Specs   — Fertige Styles für häufige Komponenten
+ */
+
+/* =============================================================================
+   1. COLOR SYSTEM
+   ============================================================================= */
+
+/* ── Primary Palette (Blau — basierend auf bestehender Brand-Farbe #0066ff) ── */
+:root {
+  --color-primary-50:  #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #0066ff;  /* Base: Brand-Farbe */
+  --color-primary-600: #0052cc;  /* Hover */
+  --color-primary-700: #0043a8;  /* Active */
+  --color-primary-800: #003380;
+  --color-primary-900: #002255;
+  --color-primary-950: #001533;
+}
+
+/* ── Secondary Palette (Violett — für Write/Optimieren-Funktion) ── */
+:root {
+  --color-secondary-50:  #f5f3ff;
+  --color-secondary-100: #ede9fe;
+  --color-secondary-200: #ddd6fe;
+  --color-secondary-300: #c4b5fd;
+  --color-secondary-400: #a78bfa;
+  --color-secondary-500: #7c3aed;  /* Base: Violett */
+  --color-secondary-600: #6d28d9;
+  --color-secondary-700: #5b21b6;
+  --color-secondary-800: #4c1d95;
+  --color-secondary-900: #3b0764;
+  --color-secondary-950: #2e1065;
+}
+
+/* ── Neutral Palette (Grau) ── */
+:root {
+  --color-neutral-50:  #f7f8fc;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e2e4ea;
+  --color-neutral-300: #cfd3dc;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #1a1a2e;
+  --color-neutral-950: #0f1117;
+}
+
+/* ── Semantic Colors: Light Mode (Default) ── */
+:root {
+  /* Backgrounds */
+  --color-bg-default:  var(--color-neutral-50);
+  --color-bg-subtle:   var(--color-neutral-100);
+  --color-bg-surface:  #ffffff;
+  --color-bg-elevated: var(--color-neutral-100);
+
+  /* Text */
+  --color-text-default:  var(--color-neutral-900);
+  --color-text-sub:     var(--color-neutral-700);
+  --color-text-muted:   var(--color-neutral-500);
+  --color-text-weak:   var(--color-neutral-400);
+  --color-text-disabled: var(--color-neutral-300);
+
+  /* Borders */
+  --color-border-default: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-400);
+
+  /* Interactive States */
+  --color-interactive-default: var(--color-primary-500);
+  --color-interactive-hover:   var(--color-primary-600);
+  --color-interactive-active: var(--color-primary-700);
+  --color-interactive-subtle:  var(--color-primary-50);
+
+  /* Feedback */
+  --color-success-bg: #d1fae5;
+  --color-success-fg: #065f46;
+  --color-success:    #059669;
+
+  --color-warning-bg: #fef3c7;
+  --color-warning-fg: #92400e;
+  --color-warning:    #d97706;
+
+  --color-error-bg:   #fee2e2;
+  --color-error-fg:   #991b1b;
+  --color-error:      #dc2626;
+
+  --color-info-bg:    #e0f2fe;
+  --color-info-fg:    #075985;
+  --color-info:       #0284c7;
+}
+
+/* ── Semantic Colors: Dark Mode ── */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --color-bg-default:  var(--color-neutral-950);
+  --color-bg-subtle:   var(--color-neutral-900);
+  --color-bg-surface:  var(--color-neutral-800);
+  --color-bg-elevated: var(--color-neutral-800);
+
+  /* Text */
+  --color-text-default: var(--color-neutral-50);
+  --color-text-sub:    var(--color-neutral-200);
+  --color-text-muted:  var(--color-neutral-400);
+  --color-text-weak:   var(--color-neutral-500);
+  --color-text-disabled: var(--color-neutral-600);
+
+  /* Borders */
+  --color-border-default: var(--color-neutral-700);
+  --color-border-strong: var(--color-neutral-500);
+
+  /* Interactive States */
+  --color-interactive-default: var(--color-primary-400);
+  --color-interactive-hover:  var(--color-primary-500);
+  --color-interactive-active: var(--color-primary-600);
+  --color-interactive-subtle: var(--color-primary-950);
+
+  /* Feedback — Dark Mode angepasst */
+  --color-success-bg: #064e3b;
+  --color-success-fg: #6ee7b7;
+  --color-success:    #10b981;
+
+  --color-warning-bg: #451a03;
+  --color-warning-fg: #fbbf24;
+  --color-warning:    #f59e0b;
+
+  --color-error-bg:   #450a0a;
+  --color-error-fg:   #f87171;
+  --color-error:      #ef4444;
+
+  --color-info-bg:    #0c4a6e;
+  --color-info-fg:    #7dd3fc;
+  --color-info:       #0ea5e9;
+}
+
+/* ── Theme: dark-blue (alias für [data-theme="dark"] — Rückwärtskompatibilität) ── */
+[data-theme="dark-blue"] {
+  --color-bg-default:  #0f1117;
+  --color-bg-subtle:   #1a1a2e;
+  --color-bg-surface:  #1f2937;
+  --color-bg-elevated: #1f2937;
+  --color-text-default: #f7f8fc;
+  --color-text-sub:    #e2e4ea;
+  --color-text-muted:  #6b7280;
+  --color-text-weak:   #4b5563;
+  --color-text-disabled: #374151;
+  --color-border-default: #374151;
+  --color-border-strong: #6b7280;
+  --color-interactive-default: #60a5fa;
+  --color-interactive-hover:  #0066ff;
+  --color-interactive-active: #0052cc;
+  --color-interactive-subtle: #001533;
+  --color-success-bg: #064e3b;
+  --color-success-fg: #6ee7b7;
+  --color-success:    #10b981;
+  --color-warning-bg: #451a03;
+  --color-warning-fg: #fbbf24;
+  --color-warning:    #f59e0b;
+  --color-error-bg:   #450a0a;
+  --color-error-fg:   #f87171;
+  --color-error:      #ef4444;
+  --color-info-bg:    #0c4a6e;
+  --color-info-fg:    #7dd3fc;
+  --color-info:       #0ea5e9;
+  --color-diff-add-bg: #064e3b;
+  --color-diff-add-fg: #6ee7b7;
+  --color-diff-del-bg: #450a0a;
+  --color-diff-del-fg: #fca5a5;
+  --color-diff-del-decoration: #ef4444;
+  --surface-dark: var(--color-bg-default);
+  --brand-checked: var(--color-primary-300);
+}
+
+/* ── Theme: light-violet ── */
+[data-theme="light-violet"] {
+  --color-interactive-default: #7c3aed;
+  --color-interactive-hover:   #6d28d9;
+  --color-interactive-active:  #5b21b6;
+  --color-interactive-subtle:  #f5f3ff;
+}
+
+/* ── Theme: dark-violet ── */
+[data-theme="dark-violet"] {
+  --color-bg-default:  #0f1117;
+  --color-bg-subtle:   #1a1a2e;
+  --color-bg-surface:  #1f2937;
+  --color-bg-elevated: #1f2937;
+  --color-text-default: #f7f8fc;
+  --color-text-sub:    #e2e4ea;
+  --color-text-muted:  #6b7280;
+  --color-text-weak:   #4b5563;
+  --color-text-disabled: #374151;
+  --color-border-default: #374151;
+  --color-border-strong: #6b7280;
+  --color-interactive-default: #a78bfa;
+  --color-interactive-hover:   #7c3aed;
+  --color-interactive-active:  #6d28d9;
+  --color-interactive-subtle:  #2e1065;
+  --color-success-bg: #064e3b;
+  --color-success-fg: #6ee7b7;
+  --color-success:    #10b981;
+  --color-warning-bg: #451a03;
+  --color-warning-fg: #fbbf24;
+  --color-warning:    #f59e0b;
+  --color-error-bg:   #450a0a;
+  --color-error-fg:   #f87171;
+  --color-error:      #ef4444;
+  --color-info-bg:    #0c4a6e;
+  --color-info-fg:    #7dd3fc;
+  --color-info:       #0ea5e9;
+  --color-diff-add-bg: #064e3b;
+  --color-diff-add-fg: #6ee7b7;
+  --color-diff-del-bg: #450a0a;
+  --color-diff-del-fg: #fca5a5;
+  --color-diff-del-decoration: #ef4444;
+  --surface-dark: var(--color-bg-default);
+  --brand-checked: var(--color-secondary-300);
+}
+
+/* ── Diff Colors (für Write/Optimieren-Diff-Anzeige) ── */
+:root {
+  --color-diff-add-bg: #d1fae5;
+  --color-diff-add-fg: #065f46;
+  --color-diff-del-bg: #fee2e2;
+  --color-diff-del-fg: #991b1b;
+  --color-diff-del-decoration: #ef4444;
+}
+
+[data-theme="dark"] {
+  --color-diff-add-bg: #064e3b;
+  --color-diff-add-fg: #6ee7b7;
+  --color-diff-del-bg: #450a0a;
+  --color-diff-del-fg: #fca5a5;
+  --color-diff-del-decoration: #ef4444;
+}
+
+/* =============================================================================
+   2. TYPOGRAPHY
+   ============================================================================= */
+
+/* ── Font Families ── */
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+}
+
+/* ── Type Scale (Major Third, Base 16px) ── */
+:root {
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-md:   1.125rem;   /* 18px */
+  --text-lg:   1.25rem;    /* 20px */
+  --text-xl:   1.5rem;     /* 24px */
+  --text-2xl:  1.875rem;   /* 30px */
+  --text-3xl:  2.25rem;    /* 36px */
+  --text-4xl:  3rem;       /* 48px */
+}
+
+/* ── Line Heights ── */
+:root {
+  --leading-none:   1;
+  --leading-tight:  1.25;
+  --leading-snug:   1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose:  2;
+}
+
+/* ── Letter Spacing ── */
+:root {
+  --tracking-tighter: -0.05em;
+  --tracking-tight:   -0.025em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.025em;
+  --tracking-wider:  0.05em;
+}
+
+/* ── Font Weights ── */
+:root {
+  --font-regular: 400;
+  --font-medium:  500;
+  --font-semibold: 600;
+  --font-bold:    700;
+}
+
+/* =============================================================================
+   3. SPACING (8pt Grid)
+   ============================================================================= */
+
+:root {
+  --space-0:   0;
+  --space-1:   0.25rem;   /* 4px */
+  --space-2:   0.5rem;    /* 8px */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;       /* 80px */
+  --space-24:  6rem;       /* 96px */
+}
+
+/* ── Semantic Spacing Aliases ── */
+:root {
+  /* Inset Padding (Komponenten-Innenseiten) */
+  --space-inset-xs: var(--space-1) var(--space-2);
+  --space-inset-sm: var(--space-2) var(--space-3);
+  --space-inset-md: var(--space-3) var(--space-4);
+  --space-inset-lg: var(--space-4) var(--space-6);
+
+  /* Stack (Vertikaler Abstand zwischen Elementen) */
+  --space-stack-xs: var(--space-1);
+  --space-stack-sm: var(--space-2);
+  --space-stack-md: var(--space-4);
+  --space-stack-lg: var(--space-6);
+  --space-stack-xl: var(--space-8);
+
+  /* Inline (Horizontaler Abstand) */
+  --space-inline-xs: var(--space-1);
+  --space-inline-sm: var(--space-2);
+  --space-inline-md: var(--space-3);
+  --space-inline-lg: var(--space-4);
+}
+
+/* =============================================================================
+   4. SHAPE (Border Radius)
+   ============================================================================= */
+
+:root {
+  --radius-none: 0;
+  --radius-sm:   0.25rem;   /* 4px */
+  --radius-md:   0.375rem;  /* 6px */
+  --radius-lg:   0.5rem;    /* 8px */
+  --radius-xl:   0.75rem;   /* 12px */
+  --radius-2xl:  1rem;      /* 16px */
+  --radius-3xl:  1.5rem;    /* 24px */
+  --radius-full: 9999px;
+}
+
+/* =============================================================================
+   5. ELEVATION (Shadows)
+   ============================================================================= */
+
+:root {
+  --shadow-xs:  0 1px 1px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md:  0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Semantic Shadows */
+  --shadow-card:    var(--shadow-sm);
+  --shadow-dropdown: var(--shadow-lg);
+  --shadow-modal:   var(--shadow-xl);
+  --shadow-focus:   0 0 0 3px rgb(0 102 255 / 0.4);  /* Primary-500 mit Alpha */
+  --shadow-focus-error: 0 0 0 3px rgb(220 38 38 / 0.4); /* Error-500 mit Alpha */
+}
+
+/* =============================================================================
+   6. MOTION
+   ============================================================================= */
+
+:root {
+  /* Duration */
+  --duration-instant: 50ms;
+  --duration-fast:    100ms;
+  --duration-normal: 200ms;
+  --duration-slow:   300ms;
+  --duration-slower: 500ms;
+
+  /* Easing */
+  --ease-default:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in:       cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-bounce:   cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* =============================================================================
+   7. COMPONENT SPECS
+   ============================================================================= */
+
+/* ── Button: Primary ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-interactive-default);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: 
+    background var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default),
+    transform var(--duration-instant) var(--ease-default);
+}
+
+.btn-primary:hover {
+  background: var(--color-interactive-hover);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-interactive-default) 35%, transparent);
+}
+
+.btn-primary:active {
+  background: var(--color-interactive-active);
+  transform: translateY(1px);
+}
+
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn-primary:disabled {
+  background: var(--color-neutral-300);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Button: Ghost/Secondary ── */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: 
+    background var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default);
+}
+
+.btn-ghost:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-sub);
+  border-color: var(--color-text-weak);
+}
+
+.btn-ghost:active {
+  background: var(--color-border-default);
+}
+
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Input/Textarea ── */
+.input-textarea {
+  width: 100%;
+  padding: var(--space-4);
+  background: transparent;
+  color: var(--color-text-default);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.input-textarea::placeholder {
+  color: var(--color-text-weak);
+}
+
+/* ── Select ── */
+.select {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-surface);
+  color: var(--color-text-sub);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  outline: none;
+  transition: 
+    border-color var(--duration-fast) var(--ease-default),
+    background var(--duration-fast) var(--ease-default);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  padding-right: var(--space-8);
+}
+
+.select:hover {
+  border-color: var(--color-interactive-default);
+  color: var(--color-text-default);
+}
+
+.select:focus {
+  border-color: var(--color-interactive-default);
+  background: var(--color-interactive-subtle);
+  box-shadow: var(--shadow-focus);
+}
+
+.select option {
+  background: var(--color-bg-surface);
+  color: var(--color-text-default);
+}
+
+/* ── Card ── */
+.card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Toast: Error ── */
+.toast-error {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-error);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  animation: toast-in var(--duration-normal) var(--ease-out);
+  max-width: 360px;
+}
+
+/* ── Toast: Success ── */
+.toast-success {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-success);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  animation: toast-in var(--duration-normal) var(--ease-out);
+  max-width: 360px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-2));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Radio/Label Selection ── */
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: 
+    background var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default);
+  user-select: none;
+}
+
+.radio-label:hover {
+  background: var(--color-border-default);
+  color: var(--color-text-sub);
+}
+
+.radio-label:has(input:checked) {
+  background: var(--color-interactive-subtle);
+  color: var(--color-interactive-default);
+  font-weight: var(--font-semibold);
+}
+
+.radio-label input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* ── Progress Bar ── */
+.progress-track {
+  width: 100px;
+  height: 6px;
+  background: var(--color-border-default);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-interactive-default);
+  border-radius: var(--radius-full);
+  transition: width var(--duration-slow) var(--ease-default);
+}
+
+.progress-fill.warn {
+  background: var(--color-warning);
+}
+
+.progress-fill.danger {
+  background: var(--color-error);
+}
+
+/* ── Tab Button ── */
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: 
+    color var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--color-text-sub);
+}
+
+.tab-btn.active {
+  color: var(--color-interactive-default);
+  border-bottom-color: var(--color-interactive-default);
+  font-weight: var(--font-semibold);
+}
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: 
+    background var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default);
+}
+
+.theme-toggle:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-sub);
+  border-color: var(--color-text-weak);
+}
+
+/* ── Utility: Screen Reader Only ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Utility: Focus Visible ── */
+.focus-visible:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}

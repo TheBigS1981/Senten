@@ -1,0 +1,12 @@
+{
+  admin off
+}
+
+# Replace with your domain name
+your-domain.example.com {
+  reverse_proxy localhost:8000
+  encode gzip
+  log {
+    output file /var/log/caddy/access.log
+  }
+}

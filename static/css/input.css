@@ -1,0 +1,587 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Local Fonts — Inter (variable font, latin + latin-ext) ─────────── */
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Latin-Ext.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Latin.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── Diff styles for the contenteditable write-output pane ── */
+/* These reference CSS variables defined in index.html's <style> block */
+
+.diff-added {
+    background-color: var(--diff-add-bg, #d1fae5);
+    color: var(--diff-add-fg, #065f46);
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+.diff-removed {
+    background-color: var(--diff-del-bg, #fee2e2);
+    color: var(--diff-del-fg, #991b1b);
+    text-decoration: line-through;
+    text-decoration-color: var(--diff-del-dec, #ef4444);
+    text-decoration-thickness: 2px;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+/* ContentEditable placeholder + formatting */
+[contenteditable="true"] {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    outline: none;
+}
+
+[contenteditable="true"]:empty::before {
+    content: attr(placeholder);
+    color: var(--text-weak, #9ca3af);
+    pointer-events: none;
+}
+
+/* Screen-reader only helper */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ── History Panel Styles ── */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.history-list {
+    padding: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.history-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s ease;
+}
+
+.history-item:hover {
+    border-color: var(--brand);
+}
+
+.history-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.history-op {
+    font-weight: 500;
+    color: var(--brand);
+}
+
+.history-lang {
+    flex: 1;
+}
+
+.history-date {
+    font-size: 12px;
+}
+
+.history-item-content {
+    margin-bottom: 10px;
+}
+
+.history-source {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-item-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.history-item-actions .btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+/* ── Login Page ─────────────────────────────────────────────────────── */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg, #f0f4ff) 0%, var(--bg, #f9fafb) 60%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    padding: 1rem;
+}
+
+.login-card {
+    background: var(--surface, #ffffff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .10), 0 1px 4px rgba(0, 0, 0, .06);
+}
+
+.login-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.login-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text, #111827);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group--checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text, #111827);
+}
+
+.form-input {
+    width: 100%;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    background: var(--bg, #f9fafb);
+    border: 1px solid var(--border, #e5e7eb);
+    color: var(--text, #111827);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.form-input:focus {
+    border-color: var(--color-interactive-default, #0066ff);
+    box-shadow: 0 0 0 3px var(--color-interactive-subtle, #0066ff18);
+}
+
+.btn-full {
+    width: 100%;
+}
+
+/* ── Password Toggle ── */
+.form-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-input-wrap .form-input {
+    padding-right: 2.75rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--text-muted, #6b7280);
+    font-size: 0.9rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+}
+
+.password-toggle:hover {
+    color: var(--text, #111827);
+}
+
+/* ── Login Submit Button ── */
+.login-submit {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.login-submit:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.login-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.login-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.login-error {
+    font-size: 0.875rem;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ── Admin Page ─────────────────────────────────────────────────────── */
+
+.admin-page {
+    min-height: 100vh;
+    background: var(--bg, #f9fafb);
+    color: var(--text, #111827);
+    font-family: system-ui, sans-serif;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: var(--surface, #fff);
+    border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.admin-header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.admin-back {
+    color: var(--color-interactive-default, #0066ff);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.admin-main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.admin-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.user-card {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.user-card--inactive {
+    opacity: .6;
+}
+
+.user-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.user-username {
+    color: var(--text-muted, #6b7280);
+    font-size: 0.875rem;
+}
+
+.user-meta {
+    width: 100%;
+    font-size: 0.75rem;
+    color: var(--text-muted, #6b7280);
+}
+
+.user-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 99px;
+    letter-spacing: 0.03em;
+}
+
+.badge-admin {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-inactive {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.btn-sm {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #fecaca;
+}
+
+.admin-modal {
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,.12);
+}
+
+.admin-modal h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+.admin-modal label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 0.875rem;
+    font-size: 0.875rem;
+    color: var(--text-muted, #6b7280);
+}
+
+.admin-modal input[type="text"],
+.admin-modal input[type="password"] {
+    width: 100%;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    background: var(--bg, #f9fafb);
+    border: 1px solid var(--border, #e5e7eb);
+    color: var(--text, #111827);
+    outline: none;
+}
+
+.admin-modal input[type="checkbox"] {
+    width: auto;
+    margin-right: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+/* ── Gravatar / User Avatar ─────────────────────────────────────────── */
+
+.user-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* ── LLM Debug Panel (Admin only) ── */
+/* The panel sits inside the output pane, below the stats bar.
+   It is flush with the pane edges (no rounded corners, no side borders)
+   and scrolls internally so it doesn't push the pane layout. */
+.debug-panel {
+  @apply border text-sm font-mono;
+  background: var(--surface-alt);
+  border-color: var(--border);
+  /* no border-radius — overridden inline to flush with pane */
+}
+.debug-panel summary {
+  @apply px-4 py-2 cursor-pointer font-sans font-medium select-none;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  background: var(--surface-alt);
+  list-style: none; /* hide default triangle in some browsers */
+}
+.debug-panel summary::-webkit-details-marker { display: none; }
+.debug-panel summary::before {
+  content: '▶ ';
+  font-size: 0.65em;
+  vertical-align: middle;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+details[open].debug-panel summary::before { transform: rotate(90deg); }
+.debug-panel summary:hover { color: var(--text); }
+
+/* Scrollable content area */
+.debug-panel-body {
+  max-height: 420px;
+  overflow-y: auto;
+}
+.debug-panel .debug-section {
+  @apply px-4 pb-3;
+  border-top: 1px solid var(--border);
+}
+.debug-section h4 {
+  @apply mt-2 mb-1 text-xs font-sans font-semibold uppercase tracking-wide;
+  color: var(--text-sub);
+}
+.debug-section pre {
+  @apply p-2 rounded text-xs overflow-x-auto whitespace-pre-wrap break-words;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  max-height: 180px;
+  overflow-y: auto;
+}
+.debug-badge-changed {
+  @apply inline-block px-1 rounded text-xs ml-1;
+  background: var(--badge-warn-bg, #fef3c7);
+  color: var(--badge-warn-fg, #92400e);
+}
+.debug-badge-same {
+  @apply inline-block px-1 rounded text-xs ml-1;
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+/* ── Debug Button Active State ── */
+.btn-debug.active {
+    background: var(--brand, #0066ff);
+    color: #fff;
+}
+
+/* ── pane-output: preserve newlines as visual line breaks ── */
+/* Without this, textContent assignment strips paragraph breaks
+   since the <div> is contenteditable="false" (pre-wrap rule above
+   only targets contenteditable="true"). */
+.pane-output {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* ── Streaming overlay — sticky bottom banner inside the output pane ── */
+/* Appears while LLM is streaming. Sticks to the bottom of the visible
+   pane area so the user can read already-streamed text above it. */
+.stream-overlay {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted, #6b7280);
+    background: color-mix(in srgb, var(--surface, #fff) 88%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-top: 1px solid var(--border, #e5e7eb);
+    pointer-events: none; /* allow scroll/select through the overlay */
+    user-select: none;
+    z-index: 10;
+}
+
+/* ── Cumulative 4-week Stats ── */
+.cumulative-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted, #6b7280);
+    flex-wrap: wrap;
+}
+.cumulative-stats .stats-sep {
+    color: var(--border, #e5e7eb);
+}

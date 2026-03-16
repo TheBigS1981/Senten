@@ -1,0 +1,172 @@
+{
+  "app": {
+    "title": "Senten",
+    "subtitle": "Affinage de texte alimenté par l'IA"
+  },
+  "nav": {
+    "translate": "Traduire",
+    "write": "Optimiser",
+    "history": "Historique",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "admin": "Admin"
+  },
+  "translate": {
+    "title": "Traduction",
+    "source_placeholder": "Entrez le texte à traduire...",
+    "target_placeholder": "La traduction apparaît ici...",
+    "source_lang": "Langue source",
+    "target_lang": "Langue cible",
+    "auto_detect": "Détection automatique",
+    "translate_btn": "Traduire",
+    "clear_btn": "Effacer"
+  },
+  "write": {
+    "title": "Optimisation du style",
+    "source_placeholder": "Entrez le texte à optimiser...",
+    "target_placeholder": "Le texte optimisé apparaît ici...",
+    "target_lang": "Langue",
+    "optimization": "Optimisation",
+    "optimize_btn": "Optimiser"
+  },
+  "history": {
+    "title": "Historique",
+    "empty": "Pas encore d'historique",
+    "restore": "Restaurer",
+    "delete": "Supprimer",
+    "clear_all": "Tout effacer"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "theme": "Thème",
+    "language": "Langue",
+    "engine": "Moteur"
+  },
+  "actions": {
+    "copy": "Copier",
+    "clear": "Effacer",
+    "debug": "Debug",
+    "diff": "Diff",
+    "reset": "Réinitialiser",
+    "ctrl_enter": "Ctrl+Entrée"
+  },
+  "status": {
+    "streaming": "Transmission...",
+    "detected": "Détecté :",
+    "translating": "Traduction\u2026",
+    "optimizing": "Optimisation\u2026"
+  },
+  "notifications": {
+    "copy_failed": "Échec de la copie",
+    "delete_failed": "Échec de la suppression",
+    "debug_failed": "Échec de la demande de débogage",
+    "copied": "Copié dans le presse-papiers !"
+  },
+  "theme": {
+    "light_blue": "Clair (Bleu)",
+    "dark_blue": "Sombre (Bleu)",
+    "light_violet": "Clair (Violet)",
+    "dark_violet": "Sombre (Violet)",
+    "custom_accent": "Couleur d'accent personnalisée"
+  },
+  "stats": {
+    "words": "mots",
+    "chars": "car.",
+    "char_limit": "/ 10 000 car."
+  },
+  "usage": {
+    "translated_words": "Mots traduits (4 dernières semaines)",
+    "optimized_words": "Mots optimisés (4 dernières semaines)",
+    "llm_tokens": "Tokens LLM (4 dernières semaines)",
+    "llm_tokens_request": "Tokens LLM cette requête"
+  },
+  "debug": {
+    "title": "🐛 Informations de débogage LLM",
+    "provider_model": "Fournisseur / Modèle",
+    "system_prompt": "System Prompt",
+    "user_content": "User Content",
+    "raw_response": "Réponse brute (avant _strip_markdown)",
+    "processed_response": "Réponse traitée",
+    "token_usage": "Utilisation des tokens"
+  },
+  "no_engine": {
+    "title": "Aucun moteur configuré",
+    "description": "Ni DeepL ni un LLM n'est configuré. L'application ne peut pas effectuer de traductions."
+  },
+  "footer": {
+    "powered_by": "Propulsé par DeepL API et LLMs"
+  },
+  "languages": {
+    "auto": "Auto",
+    "more": "Plus...",
+    "more_langs": "Plus de langues...",
+    "AR": "Arabe",
+    "BG": "Bulgaro",
+    "CS": "Tchèque",
+    "DA": "Danois",
+    "DE": "Allemand",
+    "EL": "Grec",
+    "EN": "Anglais",
+    "EN-GB": "Anglais (Royaume-Uni)",
+    "EN-US": "Anglais (États-Unis)",
+    "ES": "Espagnol",
+    "ET": "Estonien",
+    "FI": "Finnois",
+    "FR": "Français",
+    "HU": "Hongrois",
+    "ID": "Indonésien",
+    "IT": "Italien",
+    "JA": "Japonais",
+    "KO": "Coréen",
+    "LT": "Lituanien",
+    "LV": "Letton",
+    "NB": "Norvégien",
+    "NL": "Néerlandais",
+    "PL": "Polonais",
+    "PT": "Portugais",
+    "PT-BR": "Portugais (BR)",
+    "PT-PT": "Portugais (PT)",
+    "RO": "Roumain",
+    "RU": "Russe",
+    "SK": "Slovaque",
+    "SL": "Slovène",
+    "SV": "Suédois",
+    "TR": "Turc",
+    "UK": "Ukrainien",
+    "ZH": "Chinois"
+  },
+  "errors": {
+    "ERR_TRANSLATE_FAILED": "La traduction a échoué. Veuillez réessayer.",
+    "ERR_WRITE_FAILED": "L'optimisation a échoué. Veuillez réessayer.",
+    "ERR_TEXT_EMPTY": "Le texte ne doit pas être vide.",
+    "ERR_LLM_NOT_CONFIGURED": "LLM n'est pas configuré. Veuillez définir LLM_PROVIDER dans la configuration.",
+    "ERR_LLM_TIMEOUT": "LLM ne répond pas (délai dépassé). Veuillez réessayer ou augmenter LLM_TIMEOUT.",
+    "ERR_LLM_AUTH": "Clé API LLM invalide ou expirée. Veuillez vérifier LLM_API_KEY dans la configuration.",
+    "ERR_LLM_QUOTA": "Crédits LLM épuisés ou limite de taux atteinte. Veuillez vérifier votre quota auprès du fournisseur.",
+    "ERR_LLM_MODEL": "Modèle LLM non disponible ou invalide. Veuillez vérifier LLM_TRANSLATE_MODEL / LLM_WRITE_MODEL dans la configuration.",
+    "ERR_LLM_CONNECTION": "LLM non joignable. Veuillez vérifier la connexion, LLM_BASE_URL et la disponibilité du service.",
+    "ERR_DEEPL_RATE_LIMIT": "Limite de taux DeepL atteinte. Veuillez patienter un moment et réessayer.",
+    "ERR_DEEPL_QUOTA": "Quota DeepL épuisé. Veuillez planifier une mise à niveau ou patienter.",
+    "ERR_DEEPL_AUTH": "Clé API DeepL invalide. Veuillez vérifier la configuration.",
+    "ERR_DEEPL_CONNECTION": "Service DeepL indisponible. Veuillez réessayer plus tard.",
+    "ERR_INVALID_TARGET_LANG": "Langue cible invalide.",
+    "ERR_INVALID_SOURCE_LANG": "Langue source invalide.",
+    "ERR_TEXT_TOO_LONG": "Texte trop long pour LLM (max. {max_chars} caractères).",
+    "ERR_STREAMING_LLM_ONLY": "Le streaming n'est disponible qu'en mode LLM.",
+    "ERR_AUTH_REQUIRED": "Non connecté.",
+    "ERR_SESSION_INVALID": "Session expirée ou invalide.",
+    "ERR_SESSION_NOT_FOUND": "Paramètres introuvables.",
+    "ERR_SETTINGS_SAVE_FAILED": "Les paramètres n'ont pas pu être enregistrés.",
+    "ERR_PASSWORD_CHANGE_FAILED": "Le mot de passe n'a pas pu être modifié.",
+    "ERR_PASSWORD_WRONG": "Mot de passe actuel incorrect.",
+    "ERR_PASSWORD_LOCAL_ONLY": "Le mot de passe ne peut être modifié qu'avec une authentification locale.",
+    "ERR_ADMIN_REQUIRED": "Droits administrateur requis.",
+    "ERR_USER_NOT_FOUND": "Utilisateur introuvable.",
+    "ERR_USER_EXISTS": "L'utilisateur existe déjà.",
+    "ERR_CANNOT_REMOVE_OWN_ADMIN": "Vous ne pouvez pas supprimer vos propres droits d'administrateur.",
+    "ERR_CANNOT_DELETE_SELF": "Vous ne pouvez pas vous supprimer vous-même.",
+    "ERR_RATE_LIMIT": "Trop de requêtes. Veuillez patienter un moment et réessayer.",
+    "ERR_HISTORY_NOT_FOUND": "Enregistrement d'historique introuvable."
+  }
+}

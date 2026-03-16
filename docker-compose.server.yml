@@ -1,0 +1,25 @@
+# Docker Compose for production server
+# Uses pre-built image from GitHub Container Registry
+
+services:
+  senten:
+    image: ghcr.io/thebigs1981/senten:latest
+    container_name: senten
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,mode=1777

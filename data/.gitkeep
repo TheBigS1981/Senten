@@ -1,0 +1,2 @@
+# This file ensures the data/ directory is tracked by git.
+# At runtime, senten.db and app.log are created here automatically.

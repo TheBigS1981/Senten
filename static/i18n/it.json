@@ -1,0 +1,172 @@
+{
+  "app": {
+    "title": "Senten",
+    "subtitle": "Raffinamento del testo basato sull'IA"
+  },
+  "nav": {
+    "translate": "Tradurre",
+    "write": "Ottimizzare",
+    "history": "Cronologia",
+    "settings": "Impostazioni",
+    "logout": "Disconnetti",
+    "login": "Accedi",
+    "admin": "Admin"
+  },
+  "translate": {
+    "title": "Traduzione",
+    "source_placeholder": "Inserisci il testo da tradurre...",
+    "target_placeholder": "La traduzione apparirà qui...",
+    "source_lang": "Lingua di origine",
+    "target_lang": "Lingua di destinazione",
+    "auto_detect": "Rilevamento automatico",
+    "translate_btn": "Tradurre",
+    "clear_btn": "Cancella"
+  },
+  "write": {
+    "title": "Ottimizzazione dello stile",
+    "source_placeholder": "Inserisci il testo da ottimizzare...",
+    "target_placeholder": "Il testo ottimizzato apparirà qui...",
+    "target_lang": "Lingua",
+    "optimization": "Ottimizzazione",
+    "optimize_btn": "Ottimizza"
+  },
+  "history": {
+    "title": "Cronologia",
+    "empty": "Nessuna cronologia ancora",
+    "restore": "Ripristina",
+    "delete": "Elimina",
+    "clear_all": "Cancella tutto"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "theme": "Tema",
+    "language": "Lingua",
+    "engine": "Motore"
+  },
+  "actions": {
+    "copy": "Copia",
+    "clear": "Cancella",
+    "debug": "Debug",
+    "diff": "Diff",
+    "reset": "Reimposta",
+    "ctrl_enter": "Ctrl+Invio"
+  },
+  "status": {
+    "streaming": "Trasmissione...",
+    "detected": "Rilevato:",
+    "translating": "Traduzione\u2026",
+    "optimizing": "Ottimizzazione\u2026"
+  },
+  "notifications": {
+    "copy_failed": "Copia non riuscita",
+    "delete_failed": "Eliminazione non riuscita",
+    "debug_failed": "Richiesta di debug non riuscita",
+    "copied": "Copiato negli appunti!"
+  },
+  "theme": {
+    "light_blue": "Chiaro (Blu)",
+    "dark_blue": "Scuro (Blu)",
+    "light_violet": "Chiaro (Viola)",
+    "dark_violet": "Scuro (Viola)",
+    "custom_accent": "Colore di accento personalizzato"
+  },
+  "stats": {
+    "words": "parole",
+    "chars": "car.",
+    "char_limit": "/ 10.000 car."
+  },
+  "usage": {
+    "translated_words": "Parole tradotte (ultime 4 settimane)",
+    "optimized_words": "Parole ottimizzate (ultime 4 settimane)",
+    "llm_tokens": "Token LLM (ultime 4 settimane)",
+    "llm_tokens_request": "Token LLM questa richiesta"
+  },
+  "debug": {
+    "title": "🐛 Informazioni di debug LLM",
+    "provider_model": "Provider / Modello",
+    "system_prompt": "System Prompt",
+    "user_content": "User Content",
+    "raw_response": "Risposta grezza (prima di _strip_markdown)",
+    "processed_response": "Risposta elaborata",
+    "token_usage": "Utilizzo token"
+  },
+  "no_engine": {
+    "title": "Nessun motore configurato",
+    "description": "Né DeepL né un LLM è configurato. L'app non può eseguire traduzioni."
+  },
+  "footer": {
+    "powered_by": "Potenziato da DeepL API e LLM"
+  },
+  "languages": {
+    "auto": "Auto",
+    "more": "Altro...",
+    "more_langs": "Altre lingue...",
+    "AR": "Arabo",
+    "BG": "Bulgaro",
+    "CS": "Ceco",
+    "DA": "Danese",
+    "DE": "Tedesco",
+    "EL": "Greco",
+    "EN": "Inglese",
+    "EN-GB": "Inglese (UK)",
+    "EN-US": "Inglese (US)",
+    "ES": "Spagnolo",
+    "ET": "Estone",
+    "FI": "Finlandese",
+    "FR": "Francese",
+    "HU": "Ungherese",
+    "ID": "Indonesiano",
+    "IT": "Italiano",
+    "JA": "Giapponese",
+    "KO": "Coreano",
+    "LT": "Lituano",
+    "LV": "Lettone",
+    "NB": "Norvegese",
+    "NL": "Olandese",
+    "PL": "Polacco",
+    "PT": "Portoghese",
+    "PT-BR": "Portoghese (BR)",
+    "PT-PT": "Portoghese (PT)",
+    "RO": "Rumeno",
+    "RU": "Russo",
+    "SK": "Slovacco",
+    "SL": "Sloveno",
+    "SV": "Svedese",
+    "TR": "Turco",
+    "UK": "Ucraino",
+    "ZH": "Cinese"
+  },
+  "errors": {
+    "ERR_TRANSLATE_FAILED": "Traduzione fallita. Per favore riprova.",
+    "ERR_WRITE_FAILED": "Ottimizzazione fallita. Per favore riprova.",
+    "ERR_TEXT_EMPTY": "Il testo non deve essere vuoto.",
+    "ERR_LLM_NOT_CONFIGURED": "LLM non è configurato. Per favore imposta LLM_PROVIDER nella configurazione.",
+    "ERR_LLM_TIMEOUT": "LLM non risponde (timeout). Per favore riprova o aumenta LLM_TIMEOUT.",
+    "ERR_LLM_AUTH": "Chiave API LLM non valida o scaduta. Per favore controlla LLM_API_KEY nella configurazione.",
+    "ERR_LLM_QUOTA": "Crediti LLM esauriti o limite di velocità raggiunto. Per favore controlla il tuo quota con il provider.",
+    "ERR_LLM_MODEL": "Modello LLM non disponibile o non valido. Per favore controlla LLM_TRANSLATE_MODEL / LLM_WRITE_MODEL nella configurazione.",
+    "ERR_LLM_CONNECTION": "LLM non raggiungibile. Per favore controlla la connessione, LLM_BASE_URL e la disponibilità del servizio.",
+    "ERR_DEEPL_RATE_LIMIT": "Limite di velocità DeepL raggiunto. Per favore asetta un momento e riprova.",
+    "ERR_DEEPL_QUOTA": "Quota DeepL esaurita. Per favore effettua l'upgrade o aspetta.",
+    "ERR_DEEPL_AUTH": "Chiave API DeepL non valida. Per favore controlla la configurazione.",
+    "ERR_DEEPL_CONNECTION": "Servizio DeepL non disponibile. Per favore riprova più tardi.",
+    "ERR_INVALID_TARGET_LANG": "Lingua di destinazione non valida.",
+    "ERR_INVALID_SOURCE_LANG": "Lingua di origine non valida.",
+    "ERR_TEXT_TOO_LONG": "Testo troppo lungo per LLM (max. {max_chars} caratteri).",
+    "ERR_STREAMING_LLM_ONLY": "Lo streaming è disponibile solo in modalità LLM.",
+    "ERR_AUTH_REQUIRED": "Non connesso.",
+    "ERR_SESSION_INVALID": "Sessione scaduta o non valida.",
+    "ERR_SESSION_NOT_FOUND": "Impostazioni non trovate.",
+    "ERR_SETTINGS_SAVE_FAILED": "Le impostazioni non possono essere salvate.",
+    "ERR_PASSWORD_CHANGE_FAILED": "La password non può essere cambiata.",
+    "ERR_PASSWORD_WRONG": "Password attuale errata.",
+    "ERR_PASSWORD_LOCAL_ONLY": "La password può essere cambiata solo con autenticazione locale.",
+    "ERR_ADMIN_REQUIRED": "Diritti di amministratore richiesti.",
+    "ERR_USER_NOT_FOUND": "Utente non trovato.",
+    "ERR_USER_EXISTS": "L'utente esiste già.",
+    "ERR_CANNOT_REMOVE_OWN_ADMIN": "Non puoi rimuovere i tuoi stessi diritti di amministratore.",
+    "ERR_CANNOT_DELETE_SELF": "Non puoi eliminare te stesso.",
+    "ERR_RATE_LIMIT": "Troppe richieste. Per favore aspetta un momento e riprova.",
+    "ERR_HISTORY_NOT_FOUND": "Record di cronologia non trovato."
+  }
+}

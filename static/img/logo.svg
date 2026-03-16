@@ -1,0 +1,18 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Hintergrund: abgerundetes Quadrat in Brand-Blau -->
+  <rect width="32" height="32" rx="7" fill="#0066ff"/>
+
+  <!-- Linke Sprechblase (Quellsprache) — weiß, ausgefüllt, oben-links -->
+  <path d="M2 4C2 3.1 2.7 2.5 3.5 2.5H17.5C18.3 2.5 19 3.1 19 4V12.5C19 13.4 18.3 14 17.5 14H10.5L7 17V14H3.5C2.7 14 2 13.4 2 12.5V4Z"
+        fill="white"/>
+
+  <!-- Rechte Sprechblase (Zielsprache) — weiß, konturiert, halbtransparent, unten-rechts -->
+  <path d="M13.5 17C13.5 16.2 14.2 15.5 15 15.5H28C28.8 15.5 29.5 16.2 29.5 17V24.5C29.5 25.3 28.8 26 28 26H24.5V28.5L21 26H15C14.2 26 13.5 25.3 13.5 24.5V17Z"
+        fill="white" fill-opacity="0.28" stroke="white" stroke-width="1.1" stroke-linejoin="round"/>
+
+  <!-- Übersetzungspfeil — Chevron zwischen den Blasen -->
+  <path d="M18.5 12L21 14.5L18.5 17"
+        stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+
+</svg>
