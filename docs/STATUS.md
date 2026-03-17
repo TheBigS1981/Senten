@@ -3,7 +3,7 @@
 > Last updated: 2026-03-16
 
 ## Current Version
-**v2.12.2** — Latest stable release
+**v1.0.0** — Latest stable release
 
 ## Active Development
 
