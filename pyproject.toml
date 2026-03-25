@@ -1,6 +1,6 @@
 [project]
 name = "senten"
-version = "1.0.0"
+version = "1.0.1"
 description = "Senten — AI-powered text refinement via DeepL API"
 requires-python = ">=3.11"
 

@@ -137,6 +137,9 @@
     "ZH": "Chino"
   },
   "errors": {
+    "empty_input": "Por favor, introduce un texto.",
+    "no_translation": "No hay traducción disponible.",
+    "no_optimization": "No hay optimización disponible.",
     "ERR_TRANSLATE_FAILED": "La traducción ha fallado. Por favor, inténtalo de nuevo.",
     "ERR_WRITE_FAILED": "La optimización ha fallado. Por favor, inténtalo de nuevo.",
     "ERR_TEXT_EMPTY": "El texto no puede estar vacío.",

@@ -587,6 +587,44 @@
             white-space: nowrap;
         }
 
+        /* ── Icon-only Buttons (kompakt, 36×36px für bessere Sichtbarkeit) ── */
+        .btn-icon {
+            min-width: 36px;
+            width: auto;
+            min-height: 36px;
+            padding: 0 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border: 1px solid var(--color-border-default);
+            background: var(--color-bg-subtle);
+            color: var(--text);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: all var(--duration-fast) var(--ease-default);
+            opacity: 0.85;
+        }
+        .btn-icon:hover {
+            background: var(--color-interactive-subtle);
+            color: var(--color-interactive-default);
+            border-color: var(--color-interactive-default);
+            opacity: 1;
+        }
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+        /* Mehrere Icons in einem Button (→🖊️, →🌐) - extra Abstand */
+        .btn-icon i + i {
+            margin-left: 4px;
+        }
+        /* Icon-Buttons: bessere Sichtbarkeit für kleine Icons */
+        .btn-icon i {
+            font-size: 16px;
+            line-height: 1;
+            opacity: 1;
+        }
+
         /* ── Diff ── */
         .diff-added {
             background: var(--diff-add-bg);
@@ -949,7 +987,7 @@
             </button>
             <button id="tab-write" class="tab-btn" data-tab="write"
                     role="tab" aria-selected="false" aria-controls="write-panel">
-                <i class="fas fa-pencil-alt" aria-hidden="true"></i> <span data-i18n="nav.write">Optimieren</span>
+                <i class="fas fa-pen-fancy" aria-hidden="true"></i> <span data-i18n="nav.write">Optimieren</span>
             </button>
             <button id="tab-history" class="tab-btn" data-tab="history"
                     role="tab" aria-selected="false" aria-controls="history-panel">
@@ -1121,20 +1159,38 @@
                         <button id="btn-translate" class="btn btn-primary" aria-label="Text übersetzen (Strg+Enter)">
                             <i class="fas fa-bolt" aria-hidden="true"></i> <span data-i18n="translate.translate_btn">Übersetzen</span>
                         </button>
-                        <button id="btn-to-write" class="btn btn-ghost" aria-label="Übersetzung zum Optimieren übernehmen">
-                            <i class="fas fa-arrow-right" aria-hidden="true"></i> <span data-i18n="nav.write">Optimieren</span>
+                        <!-- Button 1: Original optimieren -->
+                        <button id="btn-optimize-input" class="btn btn-icon" 
+                                aria-label="Original optimieren"
+                                title="Originaltext in Tab 'Optimieren' übernehmen">
+                            <i class="fas fa-pen-fancy" aria-hidden="true"></i>
                         </button>
-                        <button id="btn-copy-translate" class="btn btn-ghost" style="display:none" aria-label="Übersetzung kopieren">
-                            <i class="fas fa-copy" aria-hidden="true"></i> <span data-i18n="actions.copy">Kopieren</span>
+                        <!-- Button 2: Übersetzung optimieren (nur sichtbar nach Translation) -->
+                        <button id="btn-optimize-output" class="btn btn-icon" 
+                                style="display:none"
+                                aria-label="Übersetzung optimieren"
+                                title="Übersetzung in Tab 'Optimieren' übernehmen">
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i><i class="fas fa-pen-fancy" aria-hidden="true"></i>
                         </button>
-                        <button id="btn-clear-translate" class="btn btn-ghost" aria-label="Eingabe löschen">
-                            <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="actions.clear">Löschen</span>
+                        <!-- Kopieren (Icon-only) -->
+                        <button id="btn-copy-translate" class="btn btn-icon" 
+                                style="display:none"
+                                aria-label="Kopieren"
+                                title="Übersetzung in Zwischenablage kopieren">
+                            <i class="fas fa-copy" aria-hidden="true"></i>
+                        </button>
+                        <!-- Löschen (Icon-only) -->
+                        <button id="btn-clear-translate" class="btn btn-icon"
+                                aria-label="Löschen"
+                                title="Eingabe und Ausgabe löschen">
+                            <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                         <!-- Debug Toggle — nur für Admins, nur bei LLM aktiv (via JS gesteuert) -->
-                        <button id="btn-debug-translate" class="btn btn-ghost mobile-hide"
-                                style="display:none" aria-label="LLM Debug-Informationen anzeigen"
-                                title="Debug: Prompt &amp; Response anzeigen">
-                            <i class="fas fa-bug" aria-hidden="true"></i> <span data-i18n="actions.debug">Debug</span>
+                        <button id="btn-debug-translate" class="btn btn-icon mobile-hide"
+                                style="display:none" 
+                                aria-label="Debug"
+                                title="LLM Debug-Informationen anzeigen">
+                            <i class="fas fa-bug" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="toolbar-right">
@@ -1287,25 +1343,45 @@
                         <button id="btn-write" class="btn btn-primary" aria-label="Text optimieren (Strg+Enter)">
                             <i class="fas fa-bolt" aria-hidden="true"></i> <span data-i18n="write.optimize_btn">Optimieren</span>
                         </button>
-                        <button id="btn-to-translate" class="btn btn-ghost" aria-label="Optimierten Text übersetzen">
-                            <i class="fas fa-arrow-right" aria-hidden="true"></i> <span data-i18n="nav.translate">Übersetzen</span>
+                        <!-- Button 1: Original übersetzen -->
+                        <button id="btn-translate-input" class="btn btn-icon"
+                                aria-label="Original übersetzen"
+                                title="Originaltext in Tab 'Übersetzen' übernehmen">
+                            <i class="fas fa-language" aria-hidden="true"></i>
                         </button>
-                        <button id="btn-copy-write" class="btn btn-ghost" style="display:none" aria-label="Optimierten Text kopieren">
-                             <i class="fas fa-copy" aria-hidden="true"></i> <span data-i18n="actions.copy">Kopieren</span>
+                        <!-- Button 2: Optimierung übersetzen (nur sichtbar nach Optimization) -->
+                        <button id="btn-translate-output" class="btn btn-icon"
+                                style="display:none"
+                                aria-label="Optimierung übersetzen"
+                                title="Optimierung in Tab 'Übersetzen' übernehmen">
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i><i class="fas fa-language" aria-hidden="true"></i>
                         </button>
-                        <div class="engine-toggle-wrap" id="write-diff-toggle-wrap">
-                            <button id="btn-diff-toggle" class="btn btn-ghost" aria-label="Diff-Anzeige ein-/ausschalten" aria-pressed="true" title="Änderungen hervorheben (ein/aus)">
-                                <i class="fas fa-highlighter" aria-hidden="true"></i> <span data-i18n="actions.diff">Diff</span>
-                            </button>
-                        </div>
-                        <button id="btn-clear-write" class="btn btn-ghost" aria-label="Eingabe löschen">
-                            <i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="actions.clear">Löschen</span>
+                        <!-- Kopieren (Icon-only) -->
+                        <button id="btn-copy-write" class="btn btn-icon" 
+                                style="display:none" 
+                                aria-label="Kopieren"
+                                title="Optimierten Text in Zwischenablage kopieren">
+                            <i class="fas fa-copy" aria-hidden="true"></i>
+                        </button>
+                        <!-- Diff Toggle (Icon-only) -->
+                        <button id="btn-diff-toggle" class="btn btn-icon" 
+                                aria-label="Diff-Anzeige umschalten" 
+                                aria-pressed="true" 
+                                title="Änderungen hervorheben (ein/aus)">
+                            <i class="fas fa-highlighter" aria-hidden="true"></i>
+                        </button>
+                        <!-- Löschen (Icon-only) -->
+                        <button id="btn-clear-write" class="btn btn-icon"
+                                aria-label="Löschen"
+                                title="Eingabe und Ausgabe löschen">
+                            <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                         <!-- Debug Toggle — nur für Admins, nur bei LLM aktiv (via JS gesteuert) -->
-                        <button id="btn-debug-write" class="btn btn-ghost mobile-hide"
-                                style="display:none" aria-label="LLM Debug-Informationen anzeigen"
-                                title="Debug: Prompt &amp; Response anzeigen">
-                            <i class="fas fa-bug" aria-hidden="true"></i> <span data-i18n="actions.debug">Debug</span>
+                        <button id="btn-debug-write" class="btn btn-icon mobile-hide"
+                                style="display:none"
+                                aria-label="Debug"
+                                title="LLM Debug-Informationen anzeigen">
+                            <i class="fas fa-bug" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="toolbar-right">

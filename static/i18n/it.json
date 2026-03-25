@@ -137,6 +137,9 @@
     "ZH": "Cinese"
   },
   "errors": {
+    "empty_input": "Si prega di inserire un testo.",
+    "no_translation": "Nessuna traduzione disponibile.",
+    "no_optimization": "Nessuna ottimizzazione disponibile.",
     "ERR_TRANSLATE_FAILED": "Traduzione fallita. Per favore riprova.",
     "ERR_WRITE_FAILED": "Ottimizzazione fallita. Per favore riprova.",
     "ERR_TEXT_EMPTY": "Il testo non deve essere vuoto.",

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-25
+
+### Added
+- Dual action buttons in both tabs for improved workflow flexibility
+  - **Tab "Translate"**: Two optimize buttons — optimize source text or optimize translation
+  - **Tab "Optimize"**: Two translate buttons — translate source text or translate optimization result
+- Dynamic button visibility: output action buttons appear only after successful translation/optimization
+- i18n support for new error messages in 5 languages (DE, EN, FR, IT, ES)
+
+### Changed
+- Streamlined toolbar design with icon-only buttons for secondary actions
+  - Reduced toolbar width by ~156px for better space efficiency
+  - Consistent icon usage: pen-fancy (🖊️) for optimize, language (🌐) for translate
+  - Improved icon visibility with better contrast and sizing (36×36px)
+- Toolbar buttons now auto-resize for multi-icon buttons (e.g., arrow + action icon)
+- Tab navigation icon for "Optimize" now matches toolbar icon for consistency
+
+### Fixed
+- Icon visibility issues in dark mode (improved contrast and background)
+- Button sizing for multi-icon buttons (arrow + action combinations)
+
 ## [1.0.0] - 2026-03-16
 
 First public release.

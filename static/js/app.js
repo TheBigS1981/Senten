@@ -668,13 +668,15 @@ const App = {
         document.getElementById('btn-translate').addEventListener('click',       () => this.translate());
         document.getElementById('btn-clear-translate').addEventListener('click', () => this.clearTranslate());
         document.getElementById('btn-copy-translate').addEventListener('click',  () => this.copyToClipboard('output-text-translate'));
-        document.getElementById('btn-to-write').addEventListener('click',        () => this.passToWrite());
+        document.getElementById('btn-optimize-input')?.addEventListener('click',  () => this.handleOptimizeInput());
+        document.getElementById('btn-optimize-output')?.addEventListener('click', () => this.handleOptimizeOutput());
 
         // Write panel
         document.getElementById('btn-write').addEventListener('click',       () => this.write());
         document.getElementById('btn-clear-write').addEventListener('click', () => this.clearWrite());
         document.getElementById('btn-copy-write').addEventListener('click',  () => this.copyToClipboard('output-text-write'));
-        document.getElementById('btn-to-translate').addEventListener('click', () => this.passToTranslate());
+        document.getElementById('btn-translate-input')?.addEventListener('click',  () => this.handleTranslateInput());
+        document.getElementById('btn-translate-output')?.addEventListener('click', () => this.handleTranslateOutput());
         document.getElementById('btn-diff-toggle').addEventListener('click', () => this._toggleDiffView());
 
         // Input listeners with debounce + auto-resize (combined)
@@ -1483,6 +1485,11 @@ const App = {
 
             const btnCopyTranslate = document.getElementById('btn-copy-translate');
             if (btnCopyTranslate) btnCopyTranslate.style.display = '';
+            
+            // Show "Optimize Output" button after successful translation
+            const btnOptimizeOutput = document.getElementById('btn-optimize-output');
+            if (btnOptimizeOutput) btnOptimizeOutput.style.display = 'inline-flex';
+            
             // Usage is refreshed on a 60 s interval; no need to reload after each translation.
 
         } catch (e) {
@@ -1844,6 +1851,11 @@ const App = {
 
             const btnCopyWrite = document.getElementById('btn-copy-write');
             if (btnCopyWrite) btnCopyWrite.style.display = '';
+            
+            // Show "Translate Output" button after successful optimization
+            const btnTranslateOutput = document.getElementById('btn-translate-output');
+            if (btnTranslateOutput) btnTranslateOutput.style.display = 'inline-flex';
+            
             // Usage is refreshed on a 60 s interval; no need to reload after each write.
 
         } catch (e) {
@@ -2097,6 +2109,15 @@ const App = {
         if (btnCopy) btnCopy.style.display = 'none';
         const stats = document.getElementById(`output-stats-${tab}`);
         if (stats) stats.classList.remove('visible');
+        
+        // Hide output-related action buttons (optimize-output / translate-output)
+        if (tab === 'translate') {
+            const btnOptimizeOutput = document.getElementById('btn-optimize-output');
+            if (btnOptimizeOutput) btnOptimizeOutput.style.display = 'none';
+        } else if (tab === 'write') {
+            const btnTranslateOutput = document.getElementById('btn-translate-output');
+            if (btnTranslateOutput) btnTranslateOutput.style.display = 'none';
+        }
 
         // Always hide streaming overlay on clear (guards against aborted streams)
         this._setStreamingOverlay(tab, false);
@@ -2149,6 +2170,72 @@ const App = {
             document.getElementById('input-text-translate').value = text;
             this.onTranslateInput();
         }
+    },
+
+    // ── New dual-optimize/translate button handlers ─────────────────────────
+
+    handleOptimizeInput() {
+        const inputText = document.getElementById('input-text-translate').value.trim();
+        if (!inputText) {
+            this.showError(this.t('errors.empty_input'));
+            return;
+        }
+        
+        // Text in Tab "Optimieren" übernehmen
+        document.getElementById('input-text-write').value = inputText;
+        this.switchTab('write');
+        
+        // Focus auf Input setzen
+        document.getElementById('input-text-write').focus();
+    },
+
+    handleOptimizeOutput() {
+        const outputText = this.state.translateSession.targetText || 
+                           document.getElementById('output-text-translate').value.trim();
+        
+        if (!outputText) {
+            this.showError(this.t('errors.no_translation'));
+            return;
+        }
+        
+        // Übersetzung in Tab "Optimieren" übernehmen
+        document.getElementById('input-text-write').value = outputText;
+        this.switchTab('write');
+        
+        document.getElementById('input-text-write').focus();
+    },
+
+    handleTranslateInput() {
+        const inputText = document.getElementById('input-text-write').value.trim();
+        if (!inputText) {
+            this.showError(this.t('errors.empty_input'));
+            return;
+        }
+        
+        // Text in Tab "Übersetzen" übernehmen
+        document.getElementById('input-text-translate').value = inputText;
+        this.switchTab('translate');
+        
+        document.getElementById('input-text-translate').focus();
+    },
+
+    handleTranslateOutput() {
+        const output = document.getElementById('output-text-write');
+        // Strip diff-removed spans, then read text
+        const clone = output.cloneNode(true);
+        clone.querySelectorAll('.diff-removed').forEach(el => el.remove());
+        const outputText = (clone.textContent || clone.innerText || '').trim();
+        
+        if (!outputText) {
+            this.showError(this.t('errors.no_optimization'));
+            return;
+        }
+        
+        // Optimierung in Tab "Übersetzen" übernehmen
+        document.getElementById('input-text-translate').value = outputText;
+        this.switchTab('translate');
+        
+        document.getElementById('input-text-translate').focus();
     },
 
     // ── Clipboard ───────────────────────────────────────────────────────────
