@@ -609,7 +609,7 @@
                 gap: var(--space-2);
                 flex-wrap: wrap;
             }
-            .toolbar-right { font-size: var(--text-xs); flex-wrap: wrap; }
+            .toolbar-right { font-size: var(--space-xs); flex-wrap: wrap; }
         }
         .pane {
             position: relative;
@@ -978,6 +978,202 @@
                         <i class="fas fa-bolt" aria-hidden="true"></i>
                         <span id="llm-req-tokens-in">0</span> in · <span id="llm-req-tokens-out">0</span> out
                     </span>
+                </div>
+            </div>
+
+            <!-- Theme Picker -->
+            <div class="theme-picker" id="theme-picker">
+                <button class="theme-toggle" id="theme-toggle-btn"
+                        aria-haspopup="listbox" aria-expanded="false"
+                        title="Theme ändern (Strg+D für Hell/Dunkel)">
+                    <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
+                    <span id="theme-label">Hell (Blau)</span>
+                    <i class="fas fa-chevron-down theme-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="theme-dropdown" id="theme-dropdown" role="listbox" aria-label="Theme wählen" hidden>
+                    <div class="theme-option-group">
+                        <button class="theme-option" data-theme="light-blue" role="option">
+                            <i class="fas fa-sun" aria-hidden="true"></i>
+                            <span data-i18n="theme.light_blue">Hell (Blau)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                        <button class="theme-option" data-theme="dark-blue" role="option">
+                            <i class="fas fa-moon" aria-hidden="true"></i>
+                            <span data-i18n="theme.dark_blue">Dunkel (Blau)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                        <button class="theme-option" data-theme="light-violet" role="option">
+                            <i class="fas fa-sun" style="color:#7c3aed" aria-hidden="true"></i>
+                            <span data-i18n="theme.light_violet">Hell (Violett)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                        <button class="theme-option" data-theme="dark-violet" role="option">
+                            <i class="fas fa-moon" style="color:#a78bfa" aria-hidden="true"></i>
+                            <span data-i18n="theme.dark_violet">Dunkel (Violett)</span>
+                            <i class="fas fa-check theme-option-check" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="theme-separator" role="separator"></div>
+                    <div class="theme-accent-section">
+                        <span class="theme-accent-label" data-i18n="theme.custom_accent">Eigene Akzentfarbe</span>
+                        <div class="theme-accent-row">
+                            <input type="color" id="theme-accent-color" class="theme-color-input"
+                                   value="#0066ff" title="Akzentfarbe wählen"
+                                   aria-label="Eigene Akzentfarbe wählen">
+                            <button class="theme-accent-reset" id="theme-accent-reset" title="Akzentfarbe zurücksetzen">
+                                <i class="fas fa-undo-alt" aria-hidden="true"></i> <span data-i18n="actions.reset">Zurücksetzen</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Menu (shown via JS when logged in) -->
+            <div id="user-menu-wrap" class="user-menu-wrap" hidden>
+                <button id="user-menu-btn" class="user-menu-btn"
+                        aria-haspopup="true" aria-expanded="false"
+                        title="Benutzerprofil">
+                    <i class="fas fa-user-circle" aria-hidden="true"></i>
+                    <span id="user-display-name">Profil</span>
+                    <i class="fas fa-chevron-down theme-chevron" aria-hidden="true"></i>
+                </button>
+                <div id="user-dropdown" class="theme-dropdown" hidden>
+                    <!-- Language selector in user dropdown -->
+                    <div class="theme-option-group">
+                        <div class="theme-accent-section" style="padding: var(--space-2);">
+                            <span class="theme-accent-label" data-i18n="settings.language">Sprache</span>
+                            <select id="ui-language-select" class="lang-select" style="width: 100%; margin-top: var(--space-2);" aria-label="UI-Sprache">
+                                <option value="en">English</option>
+                                <option value="de">Deutsch</option>
+                                <option value="fr">Français</option>
+                                <option value="it">Italiano</option>
+                                <option value="es">Español</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="theme-separator" role="separator"></div>
+                    <div id="user-dropdown-admin" hidden>
+                        <a href="/admin" class="theme-option">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                            <span data-i18n="nav.admin">Admin</span>
+                        </a>
+                        <div class="theme-separator" role="separator"></div>
+                    </div>
+                    <button id="user-logout-btn" class="theme-option user-logout-btn">
+                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                        <span data-i18n="nav.logout">Abmelden</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist" aria-label="Funktionen">
+            <button id="tab-translate" class="tab-btn active" data-tab="translate"
+                    role="tab" aria-selected="true" aria-controls="translate-panel">
+                <i class="fas fa-language" aria-hidden="true"></i> <span data-i18n="nav.translate">Übersetzen</span>
+            </button>
+            <button id="tab-write" class="tab-btn" data-tab="write"
+                    role="tab" aria-selected="false" aria-controls="write-panel">
+                <i class="fas fa-pen-fancy" aria-hidden="true"></i> <span data-i18n="nav.write">Optimieren</span>
+            </button>
+            <button id="tab-history" class="tab-btn" data-tab="history"
+                    role="tab" aria-selected="false" aria-controls="history-panel">
+                <i class="fas fa-history" aria-hidden="true"></i> <span data-i18n="nav.history">Verlauf</span>
+            </button>
+        </div>
+
+        <!-- ── Translate Panel ── -->
+        <div id="translate-panel" class="tab-panel active" role="tabpanel" aria-labelledby="tab-translate">
+            <div class="translator-card">
+
+                <!-- Language bar -->
+                <div class="lang-bar">
+                    <div class="lang-options" role="group" aria-label="Quellsprache">
+                        <input type="radio" name="source-lang-radio" id="sl-auto" value="" checked class="lang-radio">
+                        <label for="sl-auto" class="lang-label" data-i18n="languages.auto">Auto</label>
+                        <input type="radio" name="source-lang-radio" id="sl-de"   value="DE" class="lang-radio">
+                        <label for="sl-de"   class="lang-label" data-i18n="languages.DE">Deutsch</label>
+                        <input type="radio" name="source-lang-radio" id="sl-en"   value="EN" class="lang-radio">
+                        <label for="sl-en"   class="lang-label" data-i18n="languages.EN">Englisch</label>
+                        <select id="source-lang" class="lang-select" aria-label="Weitere Quellsprachen">
+                            <option value="" disabled selected data-i18n="languages.more">Weitere...</option>
+                            <option value="AR" data-i18n="languages.AR">Arabisch</option>
+                            <option value="BG" data-i18n="languages.BG">Bulgarisch</option>
+                            <option value="CS" data-i18n="languages.CS">Tschechisch</option>
+                            <option value="DA" data-i18n="languages.DA">Dänisch</option>
+                            <option value="EL" data-i18n="languages.EL">Griechisch</option>
+                            <option value="ES" data-i18n="languages.ES">Spanisch</option>
+                            <option value="ET" data-i18n="languages.ET">Estnisch</option>
+                            <option value="FI" data-i18n="languages.FI">Finnisch</option>
+                            <option value="FR" data-i18n="languages.FR">Französisch</option>
+                            <option value="HU" data-i18n="languages.HU">Ungarisch</option>
+                            <option value="ID" data-i18n="languages.ID">Indonesisch</option>
+                            <option value="IT" data-i18n="languages.IT">Italienisch</option>
+                            <option value="JA" data-i18n="languages.JA">Japanisch</option>
+                            <option value="KO" data-i18n="languages.KO">Koreanisch</option>
+                            <option value="LT" data-i18n="languages.LT">Litauisch</option>
+                            <option value="LV" data-i18n="languages.LV">Lettisch</option>
+                            <option value="NB" data-i18n="languages.NB">Norwegisch</option>
+                            <option value="NL" data-i18n="languages.NL">Niederländisch</option>
+                            <option value="PL" data-i18n="languages.PL">Polnisch</option>
+                            <option value="PT" data-i18n="languages.PT">Portugiesisch</option>
+                            <option value="RO" data-i18n="languages.RO">Rumänisch</option>
+                            <option value="RU" data-i18n="languages.RU">Russisch</option>
+                            <option value="SK" data-i18n="languages.SK">Slowakisch</option>
+                            <option value="SL" data-i18n="languages.SL">Slowenisch</option>
+                            <option value="SV" data-i18n="languages.SV">Schwedisch</option>
+                            <option value="TR" data-i18n="languages.TR">Türkisch</option>
+                            <option value="UK" data-i18n="languages.UK">Ukrainisch</option>
+                            <option value="ZH" data-i18n="languages.ZH">Chinesisch</option>
+                        </select>
+                        <span id="detected-lang-display" class="detected-badge" aria-live="polite"></span>
+                    </div>
+                    <!-- Language swap button -->
+                    <button id="btn-swap-langs" class="lang-swap-btn" title="Sprachen tauschen" aria-label="Quell- und Zielsprache tauschen">
+                        <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+                    </button>
+                    <div class="lang-options right" role="group" aria-label="Zielsprache">
+                        <input type="radio" name="target-lang" id="tl-de"    value="DE"    checked class="lang-radio">
+                        <label for="tl-de"    class="lang-label" data-i18n="languages.DE">Deutsch</label>
+                        <input type="radio" name="target-lang" id="tl-en-us" value="EN-US" class="lang-radio">
+                        <label for="tl-en-us" class="lang-label" data-i18n="languages.EN-US">Englisch (US)</label>
+                        <select id="target-lang-select" class="lang-select" aria-label="Weitere Zielsprachen">
+                            <option value="" disabled selected data-i18n="languages.more_langs">Weitere Sprachen...</option>
+                            <option value="EN-GB" data-i18n="languages.EN-GB">Englisch (UK)</option>
+                            <option value="FR" data-i18n="languages.FR">Französisch</option>
+                            <option value="ES" data-i18n="languages.ES">Spanisch</option>
+                            <option value="IT" data-i18n="languages.IT">Italienisch</option>
+                            <option value="NL" data-i18n="languages.NL">Niederländisch</option>
+                            <option value="PL" data-i18n="languages.PL">Polnisch</option>
+                            <option value="RU" data-i18n="languages.RU">Russisch</option>
+                            <option value="PT-PT" data-i18n="languages.PT-PT">Portugiesisch</option>
+                            <option value="ZH" data-i18n="languages.ZH">Chinesisch</option>
+                            <option value="JA" data-i18n="languages.JA">Japanisch</option>
+                            <option value="KO" data-i18n="languages.KO">Koreanisch</option>
+                            <option value="TR" data-i18n="languages.TR">Türkisch</option>
+                            <option value="UK" data-i18n="languages.UK">Ukrainisch</option>
+                            <option value="AR" data-i18n="languages.AR">Arabisch</option>
+                            <option value="BG" data-i18n="languages.BG">Bulgarisch</option>
+                            <option value="CS" data-i18n="languages.CS">Tschechisch</option>
+                            <option value="DA" data-i18n="languages.DA">Dänisch</option>
+                            <option value="EL" data-i18n="languages.EL">Griechisch</option>
+                            <option value="ET" data-i18n="languages.ET">Estnisch</option>
+                            <option value="FI" data-i18n="languages.FI">Finnisch</option>
+                            <option value="HU" data-i18n="languages.HU">Ungarisch</option>
+                            <option value="ID" data-i18n="languages.ID">Indonesisch</option>
+                            <option value="LT" data-i18n="languages.LT">Litauisch</option>
+                            <option value="LV" data-i18n="languages.LV">Lettisch</option>
+                            <option value="NB" data-i18n="languages.NB">Norwegisch</option>
+                            <option value="RO" data-i18n="languages.RO">Rumänisch</option>
+                            <option value="SK" data-i18n="languages.SK">Slowakisch</option>
+                            <option value="SL" data-i18n="languages.SL">Slowenisch</option>
+                            <option value="SV" data-i18n="languages.SV">Schwedisch</option>
+                        </select>
                     </div>
                 </div>
 
