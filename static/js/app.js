@@ -773,8 +773,23 @@ const App = {
             this._updateSwapButtonVisibility();
         });
 
-        // Language swap button
+        // Language swap button (desktop)
         document.getElementById('btn-swap-langs')?.addEventListener('click', () => this._swapLanguages());
+
+        // Mobile language dropdowns - Translate tab
+        document.getElementById('source-lang-mobile-translate')?.addEventListener('change', (e) => {
+            this._handleMobileLangChange('translate', 'source', e.target.value);
+        });
+        document.getElementById('target-lang-mobile-translate')?.addEventListener('change', (e) => {
+            this._handleMobileLangChange('translate', 'target', e.target.value);
+        });
+        document.getElementById('btn-swap-langs-mobile-translate')?.addEventListener('click', () => this._swapLanguages());
+
+        // Mobile language dropdowns - Write/Optimize tab
+        document.getElementById('source-lang-mobile-write')?.addEventListener('change', (e) => {
+            this._handleMobileLangChange('write', 'source', e.target.value);
+        });
+        // Write tab doesn't have mobile swap button (no source language)
 
         // Engine toggle events — wired here so they're always bound;
         // visibility is controlled via CSS class set in _initEngineToggles()
@@ -1215,13 +1230,24 @@ const App = {
 
     getTargetLang(tab) {
         const name = tab === 'write' ? 'write-target-lang' : 'target-lang';
-        // First check radio buttons
+        
+        // First check mobile dropdown (on mobile, this takes precedence)
+        const mobileSelectId = tab === 'write' ? 'target-lang-mobile-write' : 'target-lang-mobile-translate';
+        const mobileSelect = document.getElementById(mobileSelectId);
+        if (mobileSelect && window.getComputedStyle(mobileSelect.parentElement).display !== 'none') {
+            // Mobile dropdown is visible, use it
+            if (mobileSelect.value) return mobileSelect.value;
+        }
+        
+        // Then check radio buttons (desktop)
         const checked = document.querySelector(`input[name="${name}"]:checked`);
         if (checked) return checked.value;
-        // Then check dropdown
+        
+        // Then check dropdown (desktop "Weitere...")
         const selectId = tab === 'write' ? 'write-target-lang-select' : 'target-lang-select';
         const select = document.getElementById(selectId);
         if (select && select.value) return select.value;
+        
         return 'DE';
     },
 
@@ -1251,12 +1277,22 @@ const App = {
     },
 
     getSourceLang() {
-        // First check radio buttons (quick-select: Auto, Deutsch, Englisch)
+        // First check mobile dropdown (on mobile, this takes precedence)
+        const mobileSelect = document.getElementById('source-lang-mobile-translate');
+        if (mobileSelect && window.getComputedStyle(mobileSelect.parentElement).display !== 'none') {
+            // Mobile dropdown is visible, use it
+            const value = mobileSelect.value;
+            return value === '' ? null : value;  // Empty string = Auto
+        }
+        
+        // Then check radio buttons (quick-select: Auto, Deutsch, Englisch)
         const checked = document.querySelector('input[name="source-lang-radio"]:checked');
         if (checked && checked.value) return checked.value;
+        
         // Then check dropdown (Weitere...)
         const select = document.getElementById('source-lang');
         if (select && select.value) return select.value;
+        
         return null;
     },
 
@@ -1283,7 +1319,7 @@ const App = {
         const newSource = targetLang;
         const newTarget = sourceLang;
         
-        // Update source language UI
+        // Update source language UI (desktop)
         if (newSource === 'DE' || newSource === 'EN') {
             this._selectRadio('source-lang-radio', newSource);
             document.getElementById('source-lang').value = '';
@@ -1292,7 +1328,7 @@ const App = {
             document.getElementById('source-lang').value = newSource;
         }
         
-        // Update target language UI
+        // Update target language UI (desktop)
         if (newTarget === 'DE' || newTarget === 'EN-US') {
             this._selectRadio('target-lang', newTarget);
             document.getElementById('target-lang-select').value = '';
@@ -1300,6 +1336,12 @@ const App = {
             this._selectRadio('target-lang', '');
             document.getElementById('target-lang-select').value = newTarget;
         }
+        
+        // Update mobile dropdowns
+        const mobileSource = document.getElementById('source-lang-mobile-translate');
+        const mobileTarget = document.getElementById('target-lang-mobile-translate');
+        if (mobileSource) mobileSource.value = newSource;
+        if (mobileTarget) mobileTarget.value = newTarget;
         
         // Re-translate if there's input text
         const input = document.getElementById('input-text-translate');
@@ -1313,14 +1355,16 @@ const App = {
      */
     _updateSwapButtonVisibility() {
         const btn = document.getElementById('btn-swap-langs');
-        if (!btn) return;
+        const btnMobile = document.getElementById('btn-swap-langs-mobile-translate');
         
         const sourceLang = this.getSourceLang();
         const targetLang = this.getTargetLang('translate');
         
         // Only show when both source and target are explicitly selected
         const canSwap = !!(sourceLang && targetLang);
-        btn.disabled = !canSwap;
+        
+        if (btn) btn.disabled = !canSwap;
+        if (btnMobile) btnMobile.disabled = !canSwap;
     },
 
     _selectRadio(name, value) {
@@ -1330,6 +1374,72 @@ const App = {
             if (r.value === value) { r.checked = true; found = true; }
         });
         if (!found && radios.length) radios[0].checked = true;
+    },
+
+    /**
+     * Handle mobile language dropdown changes
+     * @param {string} tab - 'translate' or 'write'
+     * @param {string} type - 'source' or 'target'
+     * @param {string} value - selected language code
+     */
+    _handleMobileLangChange(tab, type, value) {
+        if (tab === 'translate' && type === 'source') {
+            // Sync source language to desktop controls
+            if (value === '' || value === 'DE' || value === 'EN') {
+                this._selectRadio('source-lang-radio', value);
+                document.getElementById('source-lang').value = '';
+            } else {
+                this._selectRadio('source-lang-radio', '');
+                document.getElementById('source-lang').value = value;
+            }
+            
+            // Update detected language display
+            if (value) {
+                this._hideDetectedLang();
+            }
+            
+            // Update swap button visibility
+            this._updateSwapButtonVisibility();
+            
+            // Re-translate if text exists
+            const input = document.getElementById('input-text-translate');
+            if (input && input.value.trim()) {
+                this.translate();
+            }
+        } else if (tab === 'translate' && type === 'target') {
+            // Sync target language to desktop controls
+            const radioName = 'target-lang';
+            const selectId = 'target-lang-select';
+            
+            if (value === 'DE' || value === 'EN-US') {
+                this._selectRadio(radioName, value);
+                document.getElementById(selectId).value = '';
+            } else {
+                this._selectRadio(radioName, '');
+                document.getElementById(selectId).value = value;
+            }
+            
+            // Update swap button visibility
+            this._updateSwapButtonVisibility();
+            
+            // Re-translate if text exists
+            const input = document.getElementById('input-text-translate');
+            if (input && input.value.trim()) {
+                this.translate();
+            }
+        } else if (tab === 'write' && type === 'source') {
+            // Sync source language to desktop controls for Write tab
+            const radioName = 'write-target-lang';
+            const selectId = 'write-target-lang-select';
+            
+            if (value === 'DE' || value === 'EN') {
+                this._selectRadio(radioName, value);
+                document.getElementById(selectId).value = '';
+            } else {
+                this._selectRadio(radioName, '');
+                document.getElementById(selectId).value = value;
+            }
+        }
     },
 
     /**
@@ -1645,38 +1755,62 @@ const App = {
 
     _applyDetectedLang(tab, detected, text, output, translatedText, signal) {
         const detectedBadge = document.getElementById('detected-lang-display');
+        const detectedBadgeMobile = document.getElementById('detected-lang-mobile-translate');
 
         if (!this.state.useAutoDetection) {
-            detectedBadge.classList.remove('visible');
+            detectedBadge?.classList.remove('visible');
+            if (detectedBadgeMobile) detectedBadgeMobile.style.display = 'none';
             return;
         }
 
         if (!detected || detected === 'unknown') {
-            detectedBadge.classList.remove('visible');
+            detectedBadge?.classList.remove('visible');
+            if (detectedBadgeMobile) detectedBadgeMobile.style.display = 'none';
             return;
         }
 
         this.state.detectedLang = detected;
-        detectedBadge.textContent = `${this.t('status.detected')} ${this.getLangName(detected)}`;
-        detectedBadge.classList.add('visible');
+        const detectedText = `${this.t('status.detected')} ${this.getLangName(detected)}`;
+        
+        // Update desktop badge
+        if (detectedBadge) {
+            detectedBadge.textContent = detectedText;
+            detectedBadge.classList.add('visible');
+        }
+        
+        // Update mobile badge
+        if (detectedBadgeMobile) {
+            detectedBadgeMobile.textContent = detectedText;
+            detectedBadgeMobile.style.display = 'inline-flex';
+        }
 
-        // Sync detected language to source radio buttons / dropdown
+        // Sync detected language to source radio buttons / dropdown (desktop)
         // Only DE and EN variants have quick-select radios
         const sourceRadioValue = detected === 'DE' ? 'DE' : detected.startsWith('EN') ? 'EN' : null;
         if (sourceRadioValue) {
             this._selectRadio('source-lang-radio', sourceRadioValue);
             const srcSelect = document.getElementById('source-lang');
-            srcSelect.value = '';
-            if (srcSelect.options[0]) srcSelect.options[0].selected = true;
+            if (srcSelect) {
+                srcSelect.value = '';
+                if (srcSelect.options[0]) srcSelect.options[0].selected = true;
+            }
         } else {
             // Language not in radios — select via dropdown if possible, keep Auto radio
             this._selectRadio('source-lang-radio', '');
             const srcSelect = document.getElementById('source-lang');
-            // Try to select in dropdown
-            const optExists = Array.from(srcSelect.options).some(o => o.value === detected);
-            if (optExists) {
-                srcSelect.value = detected;
+            if (srcSelect) {
+                // Try to select in dropdown
+                const optExists = Array.from(srcSelect.options).some(o => o.value === detected);
+                if (optExists) {
+                    srcSelect.value = detected;
+                }
             }
+        }
+        
+        // Sync to mobile dropdown
+        const mobileSource = document.getElementById('source-lang-mobile-translate');
+        if (mobileSource) {
+            mobileSource.value = detected;
         }
 
         const shouldAutoSwitch =

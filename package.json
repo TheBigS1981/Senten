@@ -1,6 +1,6 @@
 {
   "name": "senten",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Senten — AI-powered text refinement via DeepL API",
   "scripts": {
     "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --minify",

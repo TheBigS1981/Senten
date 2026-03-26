@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-03-26
+
+### Changed
+- **Mobile UX improvements** for better usability on phones and tablets
+  - Compact header: icon-only theme picker and user menu save ~200px horizontal space
+  - Redesigned language selector with native dropdown selects on mobile
+  - Language bar height reduced from ~200px to ~90px — **saves 110px vertical space**
+  - Increased textarea height from 28vh to 35vh for more visible content (~+80px)
+  - All touch targets meet WCAG minimum 44×44px standard
+  - Mobile language dropdowns sync bidirectionally with desktop controls
+  - Detected language badge now appears on both desktop and mobile views
+
+### Fixed
+- Header overflow on small screens (375px-430px width devices)
+- Language selector usability on mobile devices
+- Touch target sizes below accessibility standards
+
 ## [1.0.1] - 2026-03-25
 
 ### Added

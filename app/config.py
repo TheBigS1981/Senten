@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 APP_DIR = Path(__file__).parent.resolve()
 PROJECT_DIR = Path(__file__).parent.parent.resolve()
 
-VERSION = "1.0.0"
+VERSION = "1.0.2"
 
 
 @lru_cache(maxsize=1)

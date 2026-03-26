@@ -98,6 +98,8 @@
     "powered_by": "Powered by DeepL API and LLMs"
   },
   "languages": {
+    "source_label": "Source:",
+    "target_label": "Target:",
     "auto": "Auto",
     "more": "More...",
     "more_langs": "More languages...",
