@@ -8,6 +8,6 @@
     "lint": "ruff check ."
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^4.2.2"
   }
 }
