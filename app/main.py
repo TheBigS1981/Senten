@@ -209,8 +209,9 @@ async def login_page(request: Request):
     """Serve the login page."""
     csp_nonce = getattr(request.state, "csp_nonce", "")
     return templates.TemplateResponse(
+        request,
         "login.html",
-        {"request": request, "csp_nonce": csp_nonce},
+        {"csp_nonce": csp_nonce},
     )
 
 
@@ -219,8 +220,9 @@ async def admin_page(request: Request):
     """Serve the admin UI."""
     csp_nonce = getattr(request.state, "csp_nonce", "")
     return templates.TemplateResponse(
+        request,
         "admin.html",
-        {"request": request, "csp_nonce": csp_nonce},
+        {"csp_nonce": csp_nonce},
     )
 
 
@@ -243,9 +245,9 @@ async def root(request: Request):
     translations = get_translations(ui_language)
 
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
-            "request": request,
             "csp_nonce": csp_nonce,
             "current_year": datetime.now().year,
             "version": version_display,
