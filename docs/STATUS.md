@@ -1,19 +1,27 @@
 # Project Status
 
-> Last updated: 2026-03-16
+> Last updated: 2026-09-30
 
 ## Current Version
-**v1.0.0** — Latest stable release
+**v1.0.2** — Latest stable release (2026-03-26)
 
 ## Active Development
 
 ### Recent Features
+- Mobile UX improvements — compact header, native language dropdowns, larger textareas, 44×44px touch targets (v1.0.2)
+- Dual action buttons in Translate/Optimize tabs, icon-only toolbar (v1.0.1)
 - Multi-language UI support (i18n) — German, English, French, Italian, Spanish
 - Streaming progress overlay for LLM translations
 - LLM meta-commentary prevention (strips "Here is the translation:" etc.)
 
-### Known Issues
-None currently tracked.
+### Known Issues / Tech Debt
+- Python dependencies outdated — Dependabot PR #24 (16 updates) open; majors pending: `openai` 3.x, `anthropic` 1.x, `cryptography` 50.x, `bcrypt` 5.x — need testing before merge
+- Tailwind CSS 4 upgrade (Dependabot PR #22) — major, requires config migration
+- `docs/api_documentation.md` only covers core endpoints in detail (auth/profile/history/admin/i18n only listed in `docs/PROJECT.md`)
+
+## Recent Decisions
+- 2026-09-30: GitHub Actions bumped (checkout v6, setup-python v6, build-push-action v7, trivy-action 0.36.0) — supersedes Dependabot PRs #1, #2, #3, #15
+- 2026-09-30: `docker-compose.server.yml` healthcheck uses Python instead of `curl` (not present in slim image)
 
 ## Roadmap
 

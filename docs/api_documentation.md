@@ -5,6 +5,10 @@ Swagger UI: `http://localhost:8000/docs`
 
 Alle Request- und Response-Bodies sind JSON (`Content-Type: application/json`).
 
+> Diese Datei beschreibt die Kern-Endpunkte (Übersetzen, Optimieren, Usage) im Detail.
+> Auth-, Profil-, History-, Admin- und i18n-Endpunkte sind in der Übersicht in
+> [`docs/PROJECT.md`](./PROJECT.md#api-endpoints) gelistet; Schemas siehe Swagger UI (`/docs`).
+
 ---
 
 ## Endpunkte

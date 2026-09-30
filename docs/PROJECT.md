@@ -1,10 +1,10 @@
 # Project: Senten
 
-> Self-hosted web interface for the DeepL API
+> Self-hosted web interface for the DeepL API and LLM providers
 
 ## Overview
 
-Senten provides a self-hosted web interface for the DeepL translation API. Users can translate texts between 30+ languages or optimize their writing style through a double-translation technique, without relying on DeepL's paid web interface.
+Senten provides a self-hosted web interface for the DeepL translation API and LLM providers (OpenAI, Anthropic, Ollama, OpenAI-compatible). Users can translate texts between 30+ languages or optimize their writing style (DeepL double-translation or LLM rewrite), with user management, translation history, usage statistics, an admin UI and a multilingual interface (DE, EN, FR, IT, ES).
 
 ## Tech Stack
 
@@ -60,8 +60,18 @@ Senten provides a self-hosted web interface for the DeepL translation API. Users
 | `app/logging_config.py` | Logging dictionary configuration |
 | `app/routers/translate.py` | Translation and writing optimization endpoints |
 | `app/routers/usage.py` | Usage statistics endpoint |
+| `app/routers/auth.py` | Login / logout (session cookie) |
+| `app/routers/admin.py` | User management (admin only) |
+| `app/routers/history.py` | Translation history |
+| `app/routers/profile.py` | User profile, settings, password change |
+| `app/routers/i18n.py` | UI translation catalogs |
 | `app/services/deepl_service.py` | DeepL SDK wrapper with mock mode |
 | `app/services/usage_service.py` | SQLite-based usage tracking |
+| `app/services/llm_service.py` | LLM providers (OpenAI, Anthropic, Ollama, OpenAI-compatible) incl. streaming |
+| `app/services/user_service.py` | Local users, password hashing, sessions |
+| `app/services/history_service.py` | History persistence |
+| `app/services/i18n_service.py` | Loads `static/i18n/*.json` |
+| `app/services/validation.py` | Input validation / prompt-injection guards |
 | `app/middleware/auth.py` | Auth middleware (OIDC, Basic, Anonym) |
 | `app/middleware/security.py` | Security headers with CSP |
 | `app/models/schemas.py` | All Pydantic models and language lists |
@@ -69,6 +79,8 @@ Senten provides a self-hosted web interface for the DeepL translation API. Users
 | `app/db/models.py` | ORM models |
 | `static/js/app.js` | Main frontend application |
 | `static/js/keyboard-shortcuts.js` | Keyboard shortcut handlers |
+| `static/js/admin.js` | Admin UI |
+| `static/i18n/*.json` | UI translations (de, en, fr, it, es) |
 | `templates/index.html` | Main HTML template with CSS variables |
 | `static/css/input.css` | Tailwind input |
 | `static/css/styles.css` | Compiled Tailwind output |
@@ -113,6 +125,14 @@ docker compose down          # Stop
 | `AUTH_USERNAME` | No | — | HTTP Basic Auth username |
 | `AUTH_PASSWORD` | No | — | HTTP Basic Auth password |
 | `LOG_DIR` | No | `data` | Log directory |
+| `ALLOW_ANONYMOUS` | No | `true` | Allow access without login |
+| `ADMIN_USERNAME` | No | — | Initial admin user (created on first start) |
+| `ADMIN_PASSWORD` | No | — | Initial admin password |
+| `SESSION_LIFETIME_HOURS` | No | `168` | Session lifetime in hours (7 days) |
+| `SESSION_LIFETIME_REMEMBER_HOURS` | No | `720` | "Remember me" session lifetime (30 days) |
+| `SESSION_COOKIE_SECURE` | No | `true` | Set `Secure` flag on session cookie |
+| `TRUSTED_PROXIES` | No | `127.0.0.1,::1` | Proxies trusted for client IP headers |
+| `RATE_LIMIT_PER_MINUTE` | No | `30` | Rate limit for translate/write endpoints |
 | `LLM_PROVIDER` | No | — | LLM provider: `openai`, `anthropic`, `ollama`, `openai-compatible` |
 | `LLM_API_KEY` | No | — | LLM API key (optional for Ollama and `openai-compatible`) |
 | `LLM_BASE_URL` | No | — | LLM base URL (required for Ollama and `openai-compatible`) |
@@ -129,13 +149,39 @@ docker compose down          # Stop
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/` | Single-Page-App (HTML) |
+| GET | `/login` | Login page |
+| GET | `/admin` | Admin UI |
 | GET | `/health` | Liveness probe |
 | GET | `/health/ready` | Readiness probe (checks DB + DeepL) |
-| POST | `/api/translate` | Translate text |
-| POST | `/api/write` | Optimize text (double translation) |
-| GET | `/api/config` | DeepL configuration status |
+| POST | `/api/translate` | Translate text (DeepL or LLM) |
+| POST | `/api/translate/stream` | Translate text (LLM, SSE stream) |
+| POST | `/api/write` | Optimize text (DeepL double translation or LLM) |
+| POST | `/api/write/stream` | Optimize text (LLM, SSE stream) |
+| POST | `/api/detect-lang` | Language detection (LLM) |
+| GET | `/api/config` | DeepL/LLM configuration status + language options |
 | GET | `/api/usage` | Usage statistics (local + DeepL) |
+| GET | `/api/usage/summary` | Cumulative statistics (last 4 weeks) |
+| POST | `/api/auth/login` | Login (HttpOnly session cookie) |
+| POST | `/api/auth/logout` | Logout |
+| GET | `/api/profile` | Current user profile + settings |
+| PUT | `/api/profile/settings` | Update own settings (partial) |
+| PUT | `/api/profile/password` | Change own password (local users) |
+| GET | `/api/history` | List history |
+| POST | `/api/history` | Create history record |
+| GET | `/api/history/{id}` | Get single history record |
+| DELETE | `/api/history/{id}` | Delete single history record |
+| DELETE | `/api/history` | Delete all own history |
+| GET | `/api/admin/users` | List users (admin) |
+| POST | `/api/admin/users` | Create user (admin) |
+| PUT | `/api/admin/users/{id}` | Update user (active, admin, display name) (admin) |
+| DELETE | `/api/admin/users/{id}` | Delete user incl. data (admin) |
+| PUT | `/api/admin/users/{id}/password` | Reset password (admin) |
+| POST | `/api/admin/debug/llm` | LLM debug request (admin) |
+| GET | `/api/i18n/languages` | Supported UI languages |
+| GET | `/api/i18n/{lang}` | UI translation catalog |
 | GET | `/docs` | Swagger UI (auto-generated) |
+
+Full reference: [`docs/api_documentation.md`](./api_documentation.md)
 
 ## Auth Modes
 

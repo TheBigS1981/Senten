@@ -422,13 +422,20 @@ npm run watch:css   # Watch-Modus für Entwicklung
 | POST | `/api/auth/logout` | Logout |
 | GET | `/api/history` | Session-Historie abrufen |
 | POST | `/api/history` | History-Record anlegen |
+| GET | `/api/history/{id}` | Einzelnen History-Record abrufen |
 | DELETE | `/api/history/{id}` | History-Record löschen |
+| DELETE | `/api/history` | Gesamte eigene History löschen |
 | GET | `/api/admin/users` | Alle Benutzer (Admin) |
 | POST | `/api/admin/users` | Benutzer anlegen (Admin) |
-| PATCH | `/api/admin/users/{id}` | Benutzer aktualisieren (Admin) |
+| PUT | `/api/admin/users/{id}` | Benutzer aktualisieren inkl. aktiv/deaktiviert (Admin) |
 | DELETE | `/api/admin/users/{id}` | Benutzer löschen (Admin) |
-| PATCH | `/api/admin/users/{id}/deactivate` | Benutzer deaktivieren (Admin) |
-| POST | `/api/admin/users/{id}/reset-password` | Passwort zurücksetzen (Admin) |
+| PUT | `/api/admin/users/{id}/password` | Passwort zurücksetzen (Admin) |
+| POST | `/api/admin/debug/llm` | LLM-Debug-Anfrage (Admin) |
+| GET | `/api/profile` | Eigenes Profil + Einstellungen |
+| PUT | `/api/profile/settings` | Eigene Einstellungen ändern |
+| PUT | `/api/profile/password` | Eigenes Passwort ändern |
+| GET | `/api/i18n/languages` | Unterstützte UI-Sprachen |
+| GET | `/api/i18n/{lang}` | UI-Übersetzungskatalog |
 | GET | `/docs` | Swagger UI (FastAPI auto-generated) |
 
 ---
