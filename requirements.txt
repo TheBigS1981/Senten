@@ -4,35 +4,35 @@
 #
 #    pip-compile --no-strip-extras --output-file=requirements.txt requirements.in
 #
-annotated-doc==0.0.4
+annotated-doc==0.0.5
     # via fastapi
-annotated-types==0.7.0
+annotated-types==0.8.0
     # via pydantic
-anthropic==0.84.0
+anthropic==0.125.0
     # via -r requirements.in
-anyio==4.14.2
+anyio==4.15.1
     # via
     #   anthropic
     #   httpx
     #   openai
     #   starlette
     #   watchfiles
-bcrypt==4.2.1
+bcrypt==4.3.0
     # via -r requirements.in
-certifi==2026.1.4
+certifi==2026.7.22
     # via
     #   httpcore
     #   httpx
     #   requests
-cffi==2.0.0
+cffi==2.1.1
     # via cryptography
-charset-normalizer==3.4.4
+charset-normalizer==3.5.2
     # via requests
-click==8.3.1
+click==8.5.0
     # via uvicorn
-cryptography==50.0.1
+cryptography==50.0.2
     # via pyjwt
-deepl==1.28.0
+deepl==1.32.0
     # via -r requirements.in
 deprecated==1.3.1
     # via limits
@@ -40,33 +40,31 @@ distro==1.9.0
     # via
     #   anthropic
     #   openai
-docstring-parser==0.17.0
+docstring-parser==0.18.0
     # via anthropic
 fastapi==0.142.2
     # via -r requirements.in
-greenlet==3.3.2
-    # via sqlalchemy
 h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
 httpcore==1.0.9
     # via httpx
-httptools==0.7.1
+httptools==0.8.0
     # via uvicorn
 httpx==0.28.1
     # via
     #   -r requirements.in
     #   anthropic
     #   openai
-idna==3.11
+idna==3.20
     # via
     #   anyio
     #   httpx
     #   requests
 jinja2==3.1.6
     # via -r requirements.in
-jiter==0.13.0
+jiter==0.17.0
     # via
     #   anthropic
     #   openai
@@ -74,30 +72,30 @@ limits==5.8.0
     # via slowapi
 markupsafe==3.0.3
     # via jinja2
-openai==2.24.0
+openai==2.54.0
     # via -r requirements.in
 opentelemetry-api==1.45.0
     # via fastapi
-packaging==26.0
+packaging==26.3
     # via limits
 pycparser==3.0
     # via cffi
-pydantic==2.12.5
+pydantic==2.13.5
     # via
     #   -r requirements.in
     #   anthropic
     #   fastapi
     #   openai
     #   pydantic-settings
-pydantic-core==2.41.5
+pydantic-core==2.46.5
     # via pydantic
-pydantic-settings==2.13.1
+pydantic-settings==2.15.0
     # via -r requirements.in
 pyjwt[crypto]==2.15.1
     # via
     #   -r requirements.in
     #   pyjwt
-python-dotenv==1.2.1
+python-dotenv==1.2.3
     # via
     #   -r requirements.in
     #   pydantic-settings
@@ -106,23 +104,24 @@ python-multipart==0.0.32
     # via -r requirements.in
 pyyaml==6.0.3
     # via uvicorn
-requests==2.32.5
+requests==2.34.2
     # via deepl
-slowapi==0.1.9
+slowapi==0.1.10
     # via -r requirements.in
 sniffio==1.3.1
     # via
     #   anthropic
     #   openai
-sqlalchemy==2.0.47
+sqlalchemy==2.1.1
     # via -r requirements.in
 starlette==1.7.0
     # via fastapi
-tqdm==4.67.3
+tqdm==4.70.1
     # via openai
-typing-extensions==4.15.0
+typing-extensions==4.16.0
     # via
     #   anthropic
+    #   anyio
     #   fastapi
     #   limits
     #   openai
@@ -131,20 +130,20 @@ typing-extensions==4.15.0
     #   pydantic-core
     #   sqlalchemy
     #   typing-inspection
-typing-inspection==0.4.2
+typing-inspection==0.4.4
     # via
     #   fastapi
     #   pydantic
     #   pydantic-settings
 urllib3==2.8.0
     # via requests
-uvicorn[standard]==0.41.0
+uvicorn[standard]==0.54.0
     # via -r requirements.in
 uvloop==0.22.1
     # via uvicorn
-watchfiles==1.1.1
+watchfiles==1.3.0
     # via uvicorn
-websockets==16.0
+websockets==16.1.1
     # via uvicorn
-wrapt==2.1.1
+wrapt==2.5.0
     # via deprecated

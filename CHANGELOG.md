@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- HTML pages (`/`, `/login`, `/admin`) returned HTTP 500 after the Starlette 1.x upgrade — `TemplateResponse` now uses the new `(request, name, context)` signature; added smoke tests for all pages
+- `docker-compose.server.yml` healthcheck no longer relies on `curl` (not installed in the slim image)
+
 ### Security
 - Update vulnerable dependencies flagged by Trivy (2 CRITICAL, 12 HIGH): `PyJWT` 2.15.1 (auth bypass fixes), `anyio` 4.14.2, `cryptography` 50.0.1, `python-multipart` 0.0.32, `starlette` 1.7.0 / `fastapi` 0.142.2, `urllib3` 2.8.0
 
-### Fixed
-- `docker-compose.server.yml` healthcheck no longer relies on `curl` (not installed in the slim image)
-
 ### Changed
+- Upgrade all Python dependencies within their current major version (SQLAlchemy 2.1, uvicorn 0.54, openai 2.54, anthropic 0.125, deepl 1.32, pydantic 2.13, …)
 - CI: bump `actions/checkout` to v6, `actions/setup-python` to v6, `docker/build-push-action` to v7, `aquasecurity/trivy-action` to 0.36.0
 - `bcrypt` is now declared in `requirements.in`; test/lint tools are no longer part of `requirements.txt` (and the Docker image) — CI installs them from `requirements-dev.in`
 - Docs: complete endpoint and environment variable overview in `docs/PROJECT.md`, refresh `docs/STATUS.md`
