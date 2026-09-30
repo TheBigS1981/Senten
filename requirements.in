@@ -21,6 +21,9 @@ pydantic>=2.10.0
 pydantic-settings>=2.7.0
 python-dotenv>=1.0.0
 
+# Password hashing (local users)
+bcrypt>=4.2.1
+
 # Authentication (OIDC / JWT)
 PyJWT[crypto]>=2.8.0
 httpx>=0.28.0

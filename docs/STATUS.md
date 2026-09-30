@@ -15,11 +15,13 @@
 - LLM meta-commentary prevention (strips "Here is the translation:" etc.)
 
 ### Known Issues / Tech Debt
-- Python dependencies outdated — Dependabot PR #24 (16 updates) open; majors pending: `openai` 3.x, `anthropic` 1.x, `cryptography` 50.x, `bcrypt` 5.x — need testing before merge
+- Python dependencies partly outdated — security fixes applied 2026-09-30; Dependabot PR #24 now largely superseded; majors still pending: `openai` 3.x, `anthropic` 1.x, `cryptography` 50.x, `bcrypt` 5.x — need testing before merge
 - Tailwind CSS 4 upgrade (Dependabot PR #22) — major, requires config migration
 - `docs/api_documentation.md` only covers core endpoints in detail (auth/profile/history/admin/i18n only listed in `docs/PROJECT.md`)
 
 ## Recent Decisions
+- 2026-09-30: Vulnerable deps upgraded (PyJWT, anyio, cryptography, python-multipart, starlette/fastapi, urllib3) — Trivy blocked CI on main
+- 2026-09-30: `requirements.txt` = runtime only (pip-compile from `requirements.in`); CI installs `requirements-dev.in` additionally
 - 2026-09-30: GitHub Actions bumped (checkout v6, setup-python v6, build-push-action v7, trivy-action 0.36.0) — supersedes Dependabot PRs #1, #2, #3, #15
 - 2026-09-30: `docker-compose.server.yml` healthcheck uses Python instead of `curl` (not present in slim image)
 

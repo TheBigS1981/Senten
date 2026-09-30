@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Update vulnerable dependencies flagged by Trivy (2 CRITICAL, 12 HIGH): `PyJWT` 2.15.1 (auth bypass fixes), `anyio` 4.14.2, `cryptography` 50.0.1, `python-multipart` 0.0.32, `starlette` 1.7.0 / `fastapi` 0.142.2, `urllib3` 2.8.0
+
 ### Fixed
 - `docker-compose.server.yml` healthcheck no longer relies on `curl` (not installed in the slim image)
 
 ### Changed
 - CI: bump `actions/checkout` to v6, `actions/setup-python` to v6, `docker/build-push-action` to v7, `aquasecurity/trivy-action` to 0.36.0
+- `bcrypt` is now declared in `requirements.in`; test/lint tools are no longer part of `requirements.txt` (and the Docker image) — CI installs them from `requirements-dev.in`
 - Docs: complete endpoint and environment variable overview in `docs/PROJECT.md`, refresh `docs/STATUS.md`
 
 ## [1.0.2] - 2026-03-26
