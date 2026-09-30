@@ -3,11 +3,12 @@
 > Last updated: 2026-09-30
 
 ## Current Version
-**v1.0.2** — Latest stable release (2026-03-26)
+**v1.0.3** — Latest stable release (2026-09-30)
 
 ## Active Development
 
 ### Recent Features
+- Security & maintenance release: vulnerable deps fixed, all Python deps current within major, Starlette 1.x template fix, CI actions bumped (v1.0.3)
 - Mobile UX improvements — compact header, native language dropdowns, larger textareas, 44×44px touch targets (v1.0.2)
 - Dual action buttons in Translate/Optimize tabs, icon-only toolbar (v1.0.1)
 - Multi-language UI support (i18n) — German, English, French, Italian, Spanish
