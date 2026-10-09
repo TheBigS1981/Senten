@@ -22,9 +22,12 @@ LABEL org.opencontainers.image.title="Senten"
 LABEL org.opencontainers.image.description="Self-hosted DeepL translation frontend"
 
 # dumb-init: correct signal handling (PID 1)
+# apt-get upgrade: pull Debian security fixes not yet in the base image tag
+# (e.g. perl-base CVE-2026-13221, libpcre2 CVE-2026-103111)
 # Remove pip/setuptools/wheel from runtime image — not needed at runtime,
 # and eliminates CVEs in those packages (e.g. CVE-2026-23949, CVE-2026-24049)
 RUN apt-get update \
+ && apt-get upgrade -y --no-install-recommends \
  && apt-get install -y --no-install-recommends dumb-init \
  && rm -rf /var/lib/apt/lists/* \
  && pip uninstall -y pip setuptools wheel 2>/dev/null || true

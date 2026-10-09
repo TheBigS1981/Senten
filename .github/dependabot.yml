@@ -13,6 +13,11 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    ignore:
+      # Tailwind v4 is a breaking rewrite (separate CLI package, CSS-based
+      # config) — migrate manually, not via Dependabot
+      - dependency-name: tailwindcss
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
