@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-10-10
+
+### Fixed
+- Passwords longer than 72 bytes are truncated explicitly before bcrypt — bcrypt 5 raises instead of truncating, which would have broken user creation and locked out users with long passwords; existing hashes stay valid
+
+### Security
+- Docker runtime image applies Debian security updates (`apt-get upgrade`) — fixes `perl-base` CVE-2026-13221 (CRITICAL) and `libpcre2` CVE-2026-103111 (HIGH) flagged by Trivy
+
+### Changed
+- Upgrade Python dependencies: `openai` 3.26, `anthropic` 1.11, `bcrypt` 5.0, `sqlalchemy` 2.1.3, `python-dotenv` 1.2.4; dev tools `pytest` 9.1, `pytest-asyncio` 1.4, `pytest-cov` 7.1, `ruff` 0.16
+- CI: bump `actions/checkout` and `actions/setup-python` to v7
+- Dependabot ignores Tailwind CSS major updates (v4 requires a manual migration)
+
 ## [1.0.3] - 2026-09-30
 
 ### Fixed

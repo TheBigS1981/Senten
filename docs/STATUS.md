@@ -1,13 +1,14 @@
 # Project Status
 
-> Last updated: 2026-09-30
+> Last updated: 2026-10-10
 
 ## Current Version
-**v1.0.3** — Latest stable release (2026-09-30)
+**v1.0.4** — Latest stable release (2026-10-10)
 
 ## Active Development
 
 ### Recent Features
+- Maintenance release: openai 3.x / anthropic 1.x / bcrypt 5.x, bcrypt 72-byte fix, Debian CVE fixes in Docker image, CI actions v7 (v1.0.4)
 - Security & maintenance release: vulnerable deps fixed, all Python deps current within major, Starlette 1.x template fix, CI actions bumped (v1.0.3)
 - Mobile UX improvements — compact header, native language dropdowns, larger textareas, 44×44px touch targets (v1.0.2)
 - Dual action buttons in Translate/Optimize tabs, icon-only toolbar (v1.0.1)
@@ -16,8 +17,8 @@
 - LLM meta-commentary prevention (strips "Here is the translation:" etc.)
 
 ### Known Issues / Tech Debt
-- Pending major upgrades (not yet tested): `openai` 3.x, `anthropic` 1.x, `bcrypt` 5.x, `websockets` 17.x — all other Python deps are current within their major version (2026-09-30)
-- Tailwind CSS 4 upgrade (Dependabot PR #22, left open) — major, requires config migration (CSS-first config, `@tailwindcss/cli`)
+- Pending major upgrade: `websockets` 17.x (transitive via uvicorn) — `openai` 3.x, `anthropic` 1.x, `bcrypt` 5.x done in v1.0.4
+- Tailwind CSS 4 upgrade — major, requires config migration (CSS-first config, `@tailwindcss/cli`); Dependabot major updates ignored, PR #25 closed
 - `docs/api_documentation.md` only covers core endpoints in detail (auth/profile/history/admin/i18n only listed in `docs/PROJECT.md`)
 
 ## Recent Decisions
