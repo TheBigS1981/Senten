@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 
+import bcrypt
 import pytest
 
 from app.services.user_service import UserService
@@ -74,6 +75,19 @@ class TestPasswordVerification:
 
     def test_invalid_hash_returns_false(self, svc):
         assert svc.verify_password("any", "not_a_valid_hash") is False
+
+    def test_password_longer_than_72_bytes(self, svc):
+        # bcrypt >= 5 raises for > 72 bytes; service must truncate like bcrypt 4 did
+        long_pw = "ä" * 100  # 200 bytes UTF-8
+        user = svc.create_user(username="verify3", password=long_pw)
+        assert svc.verify_password(long_pw, user.password_hash) is True
+        assert svc.verify_password("x" + long_pw, user.password_hash) is False
+
+    def test_legacy_hash_of_long_password_still_verifies(self, svc):
+        # Hashes created with bcrypt 4 were based on the first 72 bytes only
+        long_pw = "a" * 100
+        legacy_hash = bcrypt.hashpw(long_pw.encode()[:72], bcrypt.gensalt()).decode()
+        assert svc.verify_password(long_pw, legacy_hash) is True
 
 
 # ---------------------------------------------------------------------------
