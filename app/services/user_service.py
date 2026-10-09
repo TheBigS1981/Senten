@@ -18,6 +18,15 @@ def _now_utc() -> datetime:
     return datetime.now(timezone.utc)
 
 
+# bcrypt only uses the first 72 bytes. bcrypt >= 5 raises instead of silently
+# truncating, so truncate explicitly — keeps existing hashes valid.
+_BCRYPT_MAX_BYTES = 72
+
+
+def _bcrypt_input(password: str) -> bytes:
+    return password.encode()[:_BCRYPT_MAX_BYTES]
+
+
 # Sentinel: distinguish "email not provided" from "email explicitly set to None"
 _UNSET = object()
 
@@ -32,13 +41,13 @@ class UserService:
     @staticmethod
     def hash_password(password: str) -> str:
         """Hash a plaintext password using bcrypt."""
-        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        return bcrypt.hashpw(_bcrypt_input(password), bcrypt.gensalt()).decode()
 
     @staticmethod
     def verify_password(password: str, password_hash: str) -> bool:
         """Verify a plaintext password against a bcrypt hash."""
         try:
-            return bcrypt.checkpw(password.encode(), password_hash.encode())
+            return bcrypt.checkpw(_bcrypt_input(password), password_hash.encode())
         except Exception:
             return False
 
