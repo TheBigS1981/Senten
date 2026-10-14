@@ -9,7 +9,7 @@ pytest-asyncio>=1.4.0
 pytest-cov>=7.1.0
 
 # Linting
-ruff>=0.16.10
+ruff>=0.17.0
 
 # Coverage
 coverage[toml]

@@ -1,5 +1,5 @@
 # Core framework
-fastapi>=0.115.0
+fastapi>=0.143.0
 uvicorn[standard]>=0.34.0
 jinja2>=3.1.3
 
@@ -7,17 +7,17 @@ jinja2>=3.1.3
 deepl>=1.17.0
 
 # LLM Providers (OpenAI, Anthropic, Ollama)
-openai>=3.26.0
-anthropic>=1.11.0
+openai>=3.28.0
+anthropic>=1.13.0
 
 # Rate limiting
 slowapi>=0.1.9
 
 # Database
-sqlalchemy>=2.1.3
+sqlalchemy>=2.1.4
 
 # Validation & settings
-pydantic>=2.10.0
+pydantic>=2.14.0
 pydantic-settings>=2.7.0
 python-dotenv>=1.2.4
 
